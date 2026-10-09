@@ -1635,13 +1635,13 @@ const OriginStory=(()=>{
  function sprite(rows,pal,x,y,scale=1){rows.forEach((row,j)=>[...row].forEach((p,i)=>{if(pal[p])rect(x+i*scale,y+j*scale,scale,scale,pal[p])}))}
  const child=[
  '....HHHHHH....','...HHHHHHHH...','..HHHHHHHHHH..','..HHSSSSSSHH..','..HSSSSSSSSH..','...SSKSSKSS...','...SSSSSSSS...','....SSMMSS....','...RRRRRRRR...','..BBRRRRRBBB..','..BBBBRRBBBB..','.SBBBBRRBBBBS.','.SSBBBBBBBBSS.','...BBBBBBBB...','...BBBBBBBB...','....PP.PP.....','....PP.PP.....','...KKK.KKK....'];
- function person(x,y,scale=2,{chef=false,happy=false,walk=false,bend=false,grandma=false,rot=0,shiver=false,closed=false}={}){
+ function person(x,y,scale=2,{chef=false,happy=false,walk=false,bend=false,grandma=false,rot=0,shiver=false,closed=false,other=false}={}){
   const bob=walk?Math.floor(motion*4)%2:0,jit=shiver&&!reduced?(Math.floor(motion*14)%2?1:-1):0;
   ctx.save();ctx.translate(Math.round(x+jit),Math.round(y+bob*scale));
   if(rot){ctx.translate(7*scale,18*scale);ctx.rotate(rot);ctx.translate(-7*scale,-18*scale)}
   if(bend){ctx.translate(4*scale,4*scale);ctx.rotate(.22)}
   const rows=happy?child.map(r=>r.replace('SSKSSKSS','SSMSSMSS')):closed?child.map(r=>r.replace('SSKSSKSS','SSSSSSSS').replace('SSSSSSSS..','SSSSSSSS..')):child;
-  sprite(rows,{H:grandma?'#d9d3cb':'#302c3c',S:grandma?'#e8b48e':'#f4bf96',K:'#242737',M:happy?'#994c44':'#bd795b',R:chef?'#e8d7ab':grandma?'#b4553f':'#d26352',B:chef?'#eaddc0':grandma?'#7b6a86':'#527d99',P:'#304155'},0,0,scale);
+  sprite(rows,{H:grandma?'#d9d3cb':'#302c3c',S:grandma?'#e8b48e':'#f4bf96',K:'#242737',M:happy?'#994c44':'#bd795b',R:chef?'#e8d7ab':grandma?'#b4553f':other?'#e2c062':'#d26352',B:chef?'#eaddc0':grandma?'#7b6a86':other?'#6f8a5a':'#527d99',P:'#304155'},0,0,scale);
   if(grandma){rect(5*scale,-2*scale,4*scale,3*scale,'#c9c2b9');rect(3*scale,5*scale,3*scale,scale,'#5a4636');rect(8*scale,5*scale,3*scale,scale,'#5a4636');rect(4*scale,10*scale,6*scale,5*scale,'#e7d3ab')}
   if(chef){rect(3*scale,-3*scale,8*scale,5*scale,'#ffefd3');rect(2*scale,-2*scale,10*scale,3*scale,'#ffefd3');rect(4*scale,10*scale,6*scale,5*scale,'#aa6e43');rect(5*scale,11*scale,4*scale,1*scale,'#e6b780')}
   if(happy){rect(3*scale,6*scale,2*scale,scale,'#e98b77');rect(9*scale,6*scale,2*scale,scale,'#e98b77')}
@@ -1668,18 +1668,62 @@ const OriginStory=(()=>{
   if(bite){rect(x+17*scale,y+3*scale,3*scale,2*scale,'#f4d3a4');rect(x+18*scale,y+5*scale,2*scale,scale,'#f4d3a4')}
  }
  function steam(x,y,t,w=1){for(let i=0;i<3;i++){const offset=(t*10+i*7)%24;ctx.globalAlpha=.7*(1-offset/28);rect(x+i*9*w+Math.sin(t*2+i)*2,y-offset*w,2*w,5*w,'#fff0cc')}ctx.globalAlpha=1}
- function cart(x,y,{future=false,grandma=false}={}){
+ function cart(x,y,{grandma=false}={}){
   rect(x-13,y+34,147,98,'#efad6140');rect(x,y+33,121,65,'#cc965b');rect(x+5,y+36,111,48,'#f5d793');
   rect(x+4,y+28,4,105,'#634638');rect(x+113,y+28,4,105,'#634638');
-  rect(x-5,y+8,131,21,'#724c3d');rect(x-2,y+11,125,15,'#f6dda2');text(future?'나의 붕어빵':grandma?'할머니 붕어빵':'따뜻한 붕어빵',x+60,y+22,10,'#754c31');
+  rect(x-5,y+8,131,21,'#724c3d');rect(x-2,y+11,125,15,'#f6dda2');text(grandma?'할머니 붕어빵':'따뜻한 붕어빵',x+60,y+22,10,'#754c31');
   for(let i=0;i<10;i++){rect(x-9+i*14,y+29,14,13,i%2?'#eed9aa':'#b65f46');rect(x-9+i*14,y+42,14,4,i%2?'#d7bc8b':'#974938')}
   person(x+45,y+48,2,{chef:!grandma,grandma,happy:true});
   rect(x-3,y+86,127,7,'#513b32');rect(x,y+93,121,36,'#996341');rect(x+6,y+97,109,25,'#bc8551');
-  if(future){fish(x+8,y+100,1);bill(x+66,y+101,1.4);rect(x+64,y+99,6,3,'#efe6c8');rect(x+102,y+99,6,3,'#efe6c8')}else for(let i=0;i<3;i++)fish(x+12+i*34,y+100,1);
+  for(let i=0;i<3;i++)fish(x+12+i*34,y+100,1);
   rect(x+8,y+131,17,9,'#2b303b');rect(x+96,y+131,17,9,'#2b303b');
   rect(x+12,y+132,7,5,'#657076');rect(x+101,y+132,7,5,'#657076');
   rect(x+8,y+79,57,5,'#51403b');for(let i=0;i<3;i++)fish(x+9+i*18,y+73,.7);
   steam(x+20,y+77,motion);rect(x+81,y+72,24,13,'#ebd8b6');
+ }
+ // 어른이 된 주인공: 그날의 빨간 목도리를 그대로 두르고, 낡은 앞치마를 맸다
+ const grown=[
+ '....HHHHHH....','...HHHHHHHH...','..HHHHHHHHHH..','..HHSSSSSSHH..','..HSSSSSSSSH..','...SSKSSKSS...','...SSSSSSSS...','....SSMMSS....','.....SSSS.....',
+ '...RRRRRRRR...','..BBRRRRRRBB..','.BBBRAAAARBBB.','.BBBBAAAABBBB.','.BBBAAAAAABBB.','.SBBAAAAAABBS.','.SSBAAAAAABSS.','...BAAAAAAB...','...PAAAAAAP...','...PP....PP...','...PP....PP...','..KKK....KKK..'];
+ function grownUp(x,y,scale=2,{happy=true}={}){
+  const rows=happy?grown.map(r=>r.replace('SSKSSKSS','SSMSSMSS')):grown;
+  sprite(rows,{H:'#302c3c',S:'#eebb92',K:'#242737',M:'#994c44',R:'#d26352',B:'#527d99',A:'#c8b089',P:'#304155'},x,y,scale);
+  rect(x+5*scale,y+12*scale,4*scale,scale,'#a8916c');
+  if(happy){rect(x+3*scale,y+6*scale,2*scale,scale,'#e98b77');rect(x+9*scale,y+6*scale,2*scale,scale,'#e98b77')}
+ }
+ // 낡은 리어카: 기운 천막, 손글씨 골판지 간판, 갈라진 판자, 녹, 바퀴 하나, 손잡이
+ function oldCart(x,y){
+  rect(x-13,y+34,150,96,'#efad6122');
+  // 기둥 (한쪽은 철사로 덧댐)
+  rect(x+4,y+22,4,82,'#5b4436');rect(x+112,y+24,4,80,'#5b4436');rect(x+111,y+52,6,3,'#8c8f8a');rect(x+111,y+58,6,2,'#8c8f8a');
+  // 바랜 줄무늬 천막, 덧댄 천, 찢어져 늘어진 자락
+  for(let i=0;i<9;i++)rect(x-4+i*14,y+12+(i%3===1?1:0),14,16,i%2?'#e6d6b4':'#b98571');
+  rect(x-4,y+27,126,3,'#8b6a55');rect(x+30,y+15,13,9,'#7f8f8c');rect(x+31,y+16,2,2,'#5d6b68');rect(x+40,y+21,2,2,'#5d6b68');
+  rect(x+86,y+28,6,9,'#b98571');rect(x+88,y+37,3,4,'#b98571');
+  // 손글씨 골판지 간판 (끈으로 비스듬히)
+  ctx.save();ctx.translate(x+62,y+34);ctx.rotate(-.06);
+  rect(-26,-8,52,17,'#c9a26a');rect(-26,-8,52,2,'#ddbb84');rect(-25,7,50,1,'#a98450');
+  ctx.fillStyle='#5a3b22';ctx.font='bold 10px sans-serif';ctx.textAlign='center';ctx.fillText('붕어빵',0,4);
+  ctx.restore();rect(x+38,y+23,1,4,'#e9dcc0');rect(x+86,y+22,1,5,'#e9dcc0');
+  // 주인공
+  grownUp(x+46,y+38,2);
+  // 불판 (작고 오래된 것)
+  rect(x+2,y+78,116,6,'#4a3c35');rect(x+10,y+72,52,7,'#3c3a38');for(let i=0;i<2;i++)fish(x+13+i*22,y+71,.7);steam(x+18,y+70,motion);
+  rect(x+80,y+72,22,7,'#d9c8a6');rect(x+82,y+70,18,2,'#efe2c6');
+  // 판자 몸통: 틈, 갈라짐, 녹
+  rect(x,y+84,120,38,'#8e6a4a');for(let i=0;i<5;i++)rect(x,y+90+i*7,120,1,'#5e4532');
+  rect(x+3,y+86,114,3,'#a37b56');rect(x+18,y+92,1,9,'#4f3a2b');rect(x+19,y+100,1,6,'#4f3a2b');rect(x+102,y+104,1,10,'#4f3a2b');
+  rect(x+6,y+108,7,4,'#9a5a34');rect(x+9,y+112,3,4,'#9a5a34');rect(x+108,y+88,6,3,'#9a5a34');rect(x+92,y+114,5,3,'#9a5a34');
+  // 그날의 천 원, 테이프로 붙여 둠
+  bill(x+40,y+93,1.35);rect(x+37,y+91,7,3,'#efe6c8cc');rect(x+73,y+109,7,3,'#efe6c8cc');
+  // 손잡이 두 개
+  rect(x-34,y+104,36,3,'#6b4c36');rect(x-38,y+110,40,3,'#5b4030');rect(x-38,y+103,5,11,'#3d2b20');
+  // 바퀴 (살 몇 개 빠짐) + 받침다리
+  const cx=x+86,cy=y+126,r=12;ctx.fillStyle='#2b2d33';for(let a=0;a<32;a++){const an=a/32*Math.PI*2;ctx.fillRect(Math.round(cx+Math.cos(an)*r)-1,Math.round(cy+Math.sin(an)*r)-1,3,3)}
+  [0,1,3,4,6].forEach(k=>{const an=k/8*Math.PI*2;for(let d=2;d<r;d+=2)rect(cx+Math.cos(an)*d,cy+Math.sin(an)*d,1,1,'#9aa0a3')});rect(cx-2,cy-2,4,4,'#6d7175');
+  rect(x+14,y+122,4,16,'#4a3628');rect(x+10,y+137,12,2,'#4a3628');
+  // 옆에 둔 작은 가스통
+  rect(x+124,y+112,12,26,'#5f7d8c');rect(x+126,y+108,8,4,'#4a5f6b');rect(x+124,y+120,12,2,'#4a5f6b');rect(x+127,y+128,4,3,'#9a5a34');
  }
  function heart(x,y,s=1){sprite(['.rr.rr.','rrrrrrr','rrrrrrr','.rrrrr.','..rrr..','...r...'],{r:'#ca6957'},x,y,s)}
  const ease=(a,b,t)=>Math.max(0,Math.min(1,(t-a)/(b-a)));
@@ -1747,8 +1791,8 @@ const OriginStory=(()=>{
   }else{
    // 20년 후: 낡은 리어카, 앞면에 그날의 천 원
    skyline(true);rect(22,26,32,32,'#fbe2aa');rect(17,33,42,18,'#fbe2aa');
-   cart(134,66,{future:true});bench(290,171);person(65,164,2,{walk:!reduced,happy:true});
-   star(239,166,1+Math.floor(t*2)%2,'#fff7d6');
+   oldCart(150,66);bench(300,171);person(52,164,2,{walk:!reduced,happy:true,other:true});
+   star(216,158,1+Math.floor(t*2)%2,'#fff7d6');
    for(let i=0;i<8;i++){const x=(i*67+Math.floor(t*6))%384,y=30+(i*37+Math.floor(t*9))%175;rect(x,y,2,3,i%2?'#e8c68f':'#fff0c6')}
    text('20년 후',192,39,13,'#695247');
   }
