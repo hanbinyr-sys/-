@@ -433,8 +433,43 @@ body,body.expanded-griddle{height:auto;min-height:100dvh;flex-direction:column;a
  .hd{padding-top:4px;padding-bottom:4px}
 }
 </style>
+<style id="origin-story-style">
+/* The opening is a native modal: background controls cannot receive taps. */
+#origin-story{padding:0;border:1px solid #806a58;background:#151e2e;color:#fff3d5;width:min(740px,calc(100vw - 24px));max-width:none;max-height:calc(100dvh - 24px);overflow:auto;box-shadow:0 24px 100px #0009;color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+#origin-story::backdrop{background:#080e1bef;backdrop-filter:blur(6px)}
+#origin-story *{box-sizing:border-box;font-family:inherit;letter-spacing:normal}
+#origin-story button{min-height:44px;padding:8px 14px;border:1px solid #536075;border-radius:0;color:#f9efd9;font-size:13px;background:#253047;cursor:pointer}
+#origin-story button:focus-visible{outline:3px solid #ffd488;outline-offset:-4px}
+#origin-story .origin-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;border-bottom:1px solid #394155}
+#origin-story .origin-label{font-size:10px;letter-spacing:3px;color:#aebccf}
+#origin-story .origin-top h2{font-size:17px;margin:5px 0 0;font-weight:700}
+#origin-story .origin-top button{border-color:transparent;background:transparent;color:#c6cbd3;white-space:nowrap}
+#origin-story .origin-art{position:relative;background:#172337;line-height:0;overflow:hidden}
+#origin-story canvas{display:block;width:100%;height:auto;aspect-ratio:3/2;image-rendering:pixelated;image-rendering:crisp-edges}
+#origin-story .origin-scene-tag{position:absolute;top:14px;left:18px;font-size:10px;line-height:1.4;letter-spacing:2px;padding:6px 9px;background:#111b2ab8;color:#e1e7ed;border-left:2px solid #e7bf7c}
+#origin-story .origin-dialogue{background:#f5e8cc;color:#3c302c;padding:20px 24px 18px;border-top:4px solid #bb834c}
+#origin-story .origin-speaker{display:block;color:#925b34;font-size:12px;font-weight:700;margin-bottom:9px}
+#origin-story .origin-line{margin:0;min-height:3.6em;font-size:17px;line-height:1.8;word-break:keep-all;white-space:pre-line;font-weight:500}
+#origin-story .origin-footer{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:16px}
+#origin-story .origin-footer button{background:transparent;color:#6c5a48;border:1px solid #cab89b}
+#origin-story .origin-footer .origin-next{background:#654733;color:#fff3d6;border-color:#654733;min-width:120px;font-weight:700}
+#origin-story .origin-progress{display:flex;gap:5px;padding:0 24px 15px;background:#f5e8cc}
+#origin-story .origin-progress span{height:3px;flex:1;background:#dccbad;overflow:hidden}
+#origin-story .origin-progress i{display:block;height:100%;width:0;background:#a96b3d}
+#origin-story .origin-count{font-size:11px;color:#91724f;white-space:nowrap}
+#origin-story-replay{margin-top:10px}
+@media(max-width:480px){#origin-story{width:calc(100vw - 16px);max-height:calc(100dvh - 16px)}#origin-story .origin-top{padding:10px 12px}#origin-story .origin-dialogue{padding:17px 17px 14px}#origin-story .origin-line{font-size:16px;min-height:5.4em}#origin-story .origin-progress{padding:0 17px 14px}#origin-story .origin-scene-tag{left:12px;top:12px}#origin-story .origin-footer{gap:6px}#origin-story button{padding:8px 10px}#origin-story .origin-count{display:none}}
+@media(max-height:600px) and (min-width:600px){#origin-story{width:min(950px,calc(100vw - 20px))}#origin-story .origin-layout{display:grid;grid-template-columns:1fr 1fr}#origin-story .origin-dialogue{border-top:0;border-left:4px solid #bb834c;display:flex;flex-direction:column;justify-content:center;padding:14px 20px}#origin-story .origin-line{font-size:15px;min-height:0}#origin-story .origin-progress{padding-top:10px}#origin-story .origin-footer{margin-top:12px}}
+
+</style>
 </head>
 <body>
+<dialog id="origin-story" aria-labelledby="origin-title" aria-describedby="origin-line">
+ <header class="origin-top"><div><div class="origin-label">PROLOGUE</div><h2 id="origin-title">천 원으로 시작된 꿈</h2></div><button type="button" id="origin-skip">건너뛰기 ↗</button></header>
+ <div class="origin-layout"><div class="origin-art"><canvas id="origin-canvas" width="384" height="256" role="img" aria-label="눈 내리는 겨울 골목의 어린아이"></canvas><span class="origin-scene-tag" id="origin-tag"></span></div>
+ <section class="origin-dialogue"><span class="origin-speaker" id="origin-speaker"></span><p class="origin-line" id="origin-line" aria-live="polite"></p><div class="origin-footer"><button type="button" id="origin-auto" aria-pressed="true">자동 진행 켜짐</button><span class="origin-count" id="origin-count"></span><button type="button" class="origin-next" id="origin-next">다음 장면 →</button></div></section></div>
+ <div class="origin-progress" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span></div>
+</dialog>
 <section id="lobby" class="lobby" aria-label="붕어빵 타이쿤 시작 화면">
  <div class="lobby-frame">
   <div class="lobby-hero"><span class="lobby-kicker">골목 끝, 나만의 작은 가게</span><h1>붕어빵<br><em>타이쿤</em></h1><div class="lobby-fish" aria-hidden="true"></div><p>따끈한 한 마리로 시작하는<br>우리 동네 맛집 이야기</p><div class="lobby-awning"></div></div>
@@ -446,7 +481,7 @@ body,body.expanded-griddle{height:auto;min-height:100dvh;flex-direction:column;a
    </section>
    <section id="home-panel" hidden><div class="lobby-account"><span id="account-label"></span><button id="logout" class="lobby-link">로그아웃</button></div><h2>오늘도 따끈하게!</h2><p class="lobby-sub">사장님의 가게가 기다리고 있어요.</p>
     <div class="save-card"><span class="lobby-kicker" id="save-label">내 가게 기록</span><h3 id="save-shop">저장 기록 확인 중</h3><p id="save-summary"></p><small id="save-date"></small></div>
-    <button id="home-continue" class="lobby-primary" disabled>불러오기 · 이어서 장사하기 →</button><button id="home-new" class="lobby-secondary" disabled>＋ 새 게임</button><button id="home-refresh" class="lobby-link">저장 기록 새로고침</button>
+    <button id="home-continue" class="lobby-primary" disabled>불러오기 · 이어서 장사하기 →</button><button id="home-new" class="lobby-secondary" disabled>＋ 새 게임</button><button id="origin-story-replay" class="lobby-secondary">▷ 이야기 다시 보기</button><button id="home-refresh" class="lobby-link">저장 기록 새로고침</button>
     <details class="lobby-more"><summary>이전 기록 가져오기</summary><p class="lobby-note">선택한 기록으로 현재 저장을 교체해요.</p><button id="home-legacy" class="lobby-secondary">이 브라우저의 예전 기록</button><button id="home-import" class="lobby-secondary">저장 파일(.json) 가져오기</button></details>
     <p id="home-message" class="lobby-message" role="status" aria-live="polite"></p>
     <p class="lobby-note" id="anon-note" hidden>이 계정은 지금 기기에 연결돼 있어요.<br>다른 기기로 옮기려면 게임 안 캐릭터 → 기록에서 파일로 저장한 뒤,<br>새 기기의 "저장 파일 가져오기"로 불러오세요.</p>
@@ -533,6 +568,7 @@ function fresh(){return{
   gold:{pat:0,cream:0,pizza:0},
   xp:0, lvl:1, sp:0, perk:{hand:0,talk:0,stam:0,luck:0},
   avatar:"🧑‍🍳", shop:"오천원 붕어빵",
+  story:{seenOpening:false},
   stats:{bestDay:0, days:0, totalSold:0, goldSold:0, burnt:0},
   season:{wk:"", best:0},
   books:{fl:{pat:{q:0,rev:0,cogs:0},cream:{q:0,rev:0,cogs:0},pizza:{q:0,rev:0,cogs:0}},
@@ -683,6 +719,8 @@ function migrate(o){
   o.stats=Object.assign({},D.stats,o.stats||{});
   for(const k in D.stats) o.stats[k]=num(o.stats[k],0);
   o.xp=num(o.xp,0); o.lvl=Math.max(1,num(o.lvl,1)); o.sp=Math.max(0,num(o.sp,0));
+  // 오프닝은 새 게임에서만. 기존 세이브(story 없음)는 이미 본 것으로 친다
+  o.story={seenOpening:(o.story&&typeof o.story==="object")?!!o.story.seenOpening:true};
   if(typeof o.avatar!=="string"||!o.avatar) o.avatar=D.avatar;
   if(typeof o.shop!=="string"||!o.shop.trim()) o.shop=D.shop;
   o.shop=o.shop.slice(0,16);
@@ -1176,7 +1214,7 @@ function paintAll(){paintGriddle();paintQueue();paintTray();paintTop();paintTip(
 let last=performance.now(),acc=0,modalOpen=false;
 function tick(now){
   const dt=Math.min(.25,(now-last)/1000);last=now;
-  if(APP.screen==='game'&&!document.hidden&&!modalOpen){
+  if(APP.screen==='game'&&!document.hidden&&!modalOpen&&!originStoryActive){
     const feverStep=Math.min(S.feverLeft,dt);
     S.feverLeft=Math.max(0,S.feverLeft-dt);
     S.t+=dt;acc+=dt;
@@ -1576,9 +1614,129 @@ $("#avatar").onclick=()=>openChar();
 $("#buy-dough").onclick=buyDough;
 $("#buy-fill").onclick=buyFill;
 
+/* Original pixel opening. Canvas sprites are drawn locally; no video download. */
+let originStoryActive=false;
+const OriginStory=(()=>{
+ const dialog=document.getElementById('origin-story'),canvas=document.getElementById('origin-canvas'),ctx=canvas.getContext('2d');
+ const $o=id=>document.getElementById('origin-'+id);
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const chapters=[
+  {tag:'01 / 그해 겨울',speaker:'어린 시절의 나',line:'유난히 춥던 겨울 골목.\n눈 속에서 꼬깃한 천 원 한 장을 주웠다.',alt:'눈 내리는 푸른 골목. 목도리를 두른 아이가 눈 속에서 천 원짜리 지폐를 줍는다.'},
+  {tag:'02 / 할머니의 포장마차',speaker:'붕어빵 할머니',line:'“천 원이면 하나지…\n에이, 하나 더 가져가.”',alt:'주황빛 포장마차에서 할머니가 천 원을 받고 아이에게 붕어빵 두 마리를 건넨다.'},
+  {tag:'03 / 잊을 수 없는 한 입',speaker:'어린 시절의 나',line:'한 입 베어 물자 김이 피어올랐다.\n세상이 온통 금빛으로 번졌다.',alt:'김이 나는 붕어빵을 베어 문 아이. 화면이 금빛으로 번진다.'},
+  {tag:'04 / 그날의 다짐',speaker:'어린 시절의 나',line:'“나도… 세상에서 제일 맛있는\n붕어빵을 만들 거야!”',alt:'별이 빛나는 밤하늘 아래, 아이가 빛나는 붕어빵을 올려다보며 다짐한다.'},
+  {tag:'05 / 20년 후',speaker:'그리고, 오늘',line:'낡은 리어카 한 대.\n그날의 천 원은 아직 리어카에 붙어 있다.',alt:'햇살 비치는 골목. 어른이 된 주인공의 낡은 리어카 앞면에 천 원짜리 지폐가 붙어 있다.'}
+ ];
+ const LAST=chapters.length-1;
+ let scene=0,elapsed=0,motion=0,auto=!reduced,raf=0,previous=0,painted=0,returnFocus=null,inGame=false;
+ const rect=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))};
+ function text(s,x,y,size=10,c='#fff1cd'){ctx.fillStyle=c;ctx.font=`bold ${size}px sans-serif`;ctx.textAlign='center';ctx.fillText(s,x,y)}
+ function sprite(rows,pal,x,y,scale=1){rows.forEach((row,j)=>[...row].forEach((p,i)=>{if(pal[p])rect(x+i*scale,y+j*scale,scale,scale,pal[p])}))}
+ const child=[
+ '....HHHHHH....','...HHHHHHHH...','..HHHHHHHHHH..','..HHSSSSSSHH..','..HSSSSSSSSH..','...SSKSSKSS...','...SSSSSSSS...','....SSMMSS....','...RRRRRRRR...','..BBRRRRRBBB..','..BBBBRRBBBB..','.SBBBBRRBBBBS.','.SSBBBBBBBBSS.','...BBBBBBBB...','...BBBBBBBB...','....PP.PP.....','....PP.PP.....','...KKK.KKK....'];
+ function person(x,y,scale=2,{chef=false,happy=false,walk=false,bend=false,grandma=false}={}){
+  const bob=walk?Math.floor(motion*4)%2:0;
+  ctx.save();ctx.translate(Math.round(x),Math.round(y+bob*scale));
+  if(bend){ctx.translate(4*scale,4*scale);ctx.rotate(.22)}
+  const rows=happy?child.map(r=>r.replace('SSKSSKSS','SSMSSMSS')):child;
+  sprite(rows,{H:grandma?'#d9d3cb':'#302c3c',S:grandma?'#e8b48e':'#f4bf96',K:'#242737',M:happy?'#994c44':'#bd795b',R:chef?'#e8d7ab':grandma?'#b4553f':'#d26352',B:chef?'#eaddc0':grandma?'#7b6a86':'#527d99',P:'#304155'},0,0,scale);
+  if(grandma){rect(5*scale,-2*scale,4*scale,3*scale,'#c9c2b9');rect(3*scale,5*scale,3*scale,scale,'#5a4636');rect(8*scale,5*scale,3*scale,scale,'#5a4636');rect(4*scale,10*scale,6*scale,5*scale,'#e7d3ab')}
+  if(chef){rect(3*scale,-3*scale,8*scale,5*scale,'#ffefd3');rect(2*scale,-2*scale,10*scale,3*scale,'#ffefd3');rect(4*scale,10*scale,6*scale,5*scale,'#aa6e43');rect(5*scale,11*scale,4*scale,1*scale,'#e6b780')}
+  if(happy){rect(3*scale,6*scale,2*scale,scale,'#e98b77');rect(9*scale,6*scale,2*scale,scale,'#e98b77')}
+  if(walk&&bob){rect(3*scale,17*scale,3*scale,scale,'#304155');rect(7*scale,18*scale,3*scale,scale,'#242737')}
+  ctx.restore();
+ }
+ function star(x,y,s=1,c='#f4d188'){rect(x-s,y,3*s,s,c);rect(x,y-s,s,3*s,c)}
+ function snow(t,amount=48){for(let i=0;i<amount;i++){const x=((i*67+Math.floor(t*(4+i%3)))%402)-9,y=(i*41+Math.floor(t*(11+i%7)))%250;rect(x,y,i%5===0?2:1,2,'#dce8ef')}}
+ function skyline(warm=false){
+  rect(0,0,384,256,warm?'#d8bd9b':'#17273e');
+  rect(0,74,384,110,warm?'#bdad9b':'#21334a');
+  const bs=[[0,44,47],[48,62,40],[89,32,52],[144,51,35],[181,21,46],[231,59,49],[284,36,44],[332,55,52]];
+  bs.forEach(([x,y,w],i)=>{rect(x,y,w,160-y,warm?'#b8a493':'#2b3c51');rect(x,y-3,w,3,warm?'#e4ccb0':'#728391');for(let a=0;a<3;a++)for(let b=0;b<3;b++)rect(x+7+a*11,y+12+b*23,5,9,(a+b+i)%4===0?(warm?'#f3ddb4':'#8a8374'):(warm?'#8e9996':'#3f5061'))});
+  rect(0,159,384,68,warm?'#c2b499':'#485a6a');rect(0,167,384,4,warm?'#ead6b2':'#8797a1');rect(0,202,384,54,warm?'#bda587':'#687c8b');rect(0,205,384,4,warm?'#e5ccab':'#bfced4');
+  for(let i=0;i<9;i++){rect(i*48+10,220+i%3*9,30,2,warm?'#d3b994':'#92a5b0');rect(i*52-4,245,40,2,warm?'#ac9277':'#526878')}
+ }
+ function lamp(x){rect(x,74,4,132,'#172236');rect(x-9,70,22,5,'#172236');rect(x-6,75,16,17,'#f0c484');rect(x-4,77,12,12,'#fff0bf');rect(x-3,206,10,4,'#25374a');ctx.globalAlpha=.1;rect(x-19,93,40,92,'#ffe1aa');ctx.globalAlpha=1}
+ function bench(x,y){rect(x,y,57,6,'#455666');rect(x,y+10,57,5,'#394959');rect(x+4,y+15,4,18,'#29394b');rect(x+48,y+15,4,18,'#29394b');rect(x,y-2,57,2,'#d0dce1')}
+ function bill(x,y,scale=1){rect(x,y,29*scale,14*scale,'#a4c9cb');rect(x+scale,y+scale,27*scale,12*scale,'#d0e3d3');rect(x+3*scale,y+3*scale,7*scale,8*scale,'#83aaa7');rect(x+5*scale,y+4*scale,3*scale,5*scale,'#bcd0c0');text('1000',x+19*scale,y+9*scale,5*scale,'#466b77')}
+ // A compact sprite with the same round fish silhouette, fins and cheek as the game.
+ function fish(x,y,scale=1,bite=false){
+  sprite(['..........aaa.......','.........abba.......','aa.....abbbbba......','aba..abbbbbbbbba....','abbabbbbbbbcbbbbba..','abbbbbbbbbbcbbkbbba.','abbabbbbbbbcbbbbba..','aba..abbbbbbbbrba...','aa.....abbbbba......','.........abba.......','..........aa........'],{a:'#a56b36',b:'#e9b45d',c:'#cf9144',k:'#382d2a',r:'#e49a58'},x,y,scale);
+  if(bite){rect(x+17*scale,y+3*scale,3*scale,2*scale,'#f4d3a4');rect(x+18*scale,y+5*scale,2*scale,scale,'#f4d3a4')}
+ }
+ function steam(x,y,t,w=1){for(let i=0;i<3;i++){const offset=(t*10+i*7)%24;ctx.globalAlpha=.7*(1-offset/28);rect(x+i*9*w+Math.sin(t*2+i)*2,y-offset*w,2*w,5*w,'#fff0cc')}ctx.globalAlpha=1}
+ function cart(x,y,{future=false,grandma=false}={}){
+  rect(x-13,y+34,147,98,'#efad6140');rect(x,y+33,121,65,'#cc965b');rect(x+5,y+36,111,48,'#f5d793');
+  rect(x+4,y+28,4,105,'#634638');rect(x+113,y+28,4,105,'#634638');
+  rect(x-5,y+8,131,21,'#724c3d');rect(x-2,y+11,125,15,'#f6dda2');text(future?'나의 붕어빵':grandma?'할머니 붕어빵':'따뜻한 붕어빵',x+60,y+22,10,'#754c31');
+  for(let i=0;i<10;i++){rect(x-9+i*14,y+29,14,13,i%2?'#eed9aa':'#b65f46');rect(x-9+i*14,y+42,14,4,i%2?'#d7bc8b':'#974938')}
+  person(x+45,y+48,2,{chef:!grandma,grandma,happy:true});
+  rect(x-3,y+86,127,7,'#513b32');rect(x,y+93,121,36,'#996341');rect(x+6,y+97,109,25,'#bc8551');
+  if(future){fish(x+8,y+100,1);bill(x+66,y+101,1.4);rect(x+64,y+99,6,3,'#efe6c8');rect(x+102,y+99,6,3,'#efe6c8')}else for(let i=0;i<3;i++)fish(x+12+i*34,y+100,1);
+  rect(x+8,y+131,17,9,'#2b303b');rect(x+96,y+131,17,9,'#2b303b');
+  rect(x+12,y+132,7,5,'#657076');rect(x+101,y+132,7,5,'#657076');
+  rect(x+8,y+79,57,5,'#51403b');for(let i=0;i<3;i++)fish(x+9+i*18,y+73,.7);
+  steam(x+20,y+77,motion);rect(x+81,y+72,24,13,'#ebd8b6');
+ }
+ function heart(x,y,s=1){sprite(['.rr.rr.','rrrrrrr','rrrrrrr','.rrrrr.','..rrr..','...r...'],{r:'#ca6957'},x,y,s)}
+ function glow(a){if(a<=0)return;const g=ctx.createRadialGradient(192,128,10,192,128,230);g.addColorStop(0,'#fff3c4');g.addColorStop(.55,'#f6cf6d');g.addColorStop(1,'#d9953a');ctx.globalAlpha=Math.min(a,.42);ctx.fillStyle=g;ctx.fillRect(0,0,384,256);ctx.globalAlpha=1}
+ function draw(){
+  ctx.imageSmoothingEnabled=false;ctx.globalAlpha=1;const t=reduced?4:motion,p=reduced?.8:Math.min(motion/6,1);
+  if(scene===0){
+   // 겨울 골목: 걸어와서 → 몸을 숙여 → 천 원을 줍는다
+   skyline(false);lamp(43);bench(294,170);
+   const x=reduced?150:86+Math.min(t/2.6,1)*64,picked=p>.72;
+   person(x,165,2,{walk:!reduced&&t<2.6,bend:p>.48&&!picked});
+   if(!picked){bill(198,206);star(213,193,1+Math.floor(t*2)%2);star(234,208,1)}else{bill(176,184);star(209,178,2);star(170,176,1)}
+   snow(t);text('어느 추운 겨울날',192,38,11,'#c6d5e2');
+  }else if(scene===1){
+   // 할머니의 포장마차: 천 원을 내밀고 → 붕어빵 두 마리
+   skyline(false);lamp(43);
+   ctx.globalAlpha=.14;rect(137,83,185,128,'#fbd29a');ctx.globalAlpha=1;cart(171,78,{grandma:true});
+   person(118+Math.min(t,2)*5,166,2,{walk:!reduced&&t<2});
+   if(p<.5)bill(150,183,.8);else{fish(138,179,1.1);fish(150,187,1.1);steam(145,181,t);heart(131,147,1)}
+   snow(t,22);
+  }else if(scene===2){
+   // 한 입: 김이 오르고 금빛으로 번진다
+   rect(0,0,384,256,'#f4d3a4');rect(0,190,384,66,'#d9b88e');
+   for(let i=0;i<10;i++){rect(i*47-20,0,20,256,i%2?'#f3c896':'#f9ddb0')}
+   rect(111,32,162,204,'#f8e0b7');person(140,46,7,{happy:p>.25});
+   rect(145,145,29,19,'#f4bf96');rect(215,145,26,19,'#f4bf96');fish(155,134,3.6,p>.3);steam(165,132,t,2);
+   glow((p-.3)*1.3);
+   if(p>.45)for(let i=0;i<9;i++){const sx=(i*83+31)%370+7,sy=(i*59+17)%220+10;star(sx,sy,(i+Math.floor(t*3))%3?1:2,'#fff7d6')}
+  }else if(scene===3){
+   // 다짐: 밤하늘의 빛나는 붕어빵을 올려다보는 아이
+   rect(0,0,384,256,'#243445');rect(0,211,384,45,'#32495a');rect(0,211,384,3,'#4d6576');
+   for(let i=0;i<25;i++){const x=(i*97+21)%380,y=(i*47+13)%200;star(x,y,(i%5===0?2:1),Math.floor(t*2+i)%3?'#e6c794':'#8b9b9d')}
+   {const g=ctx.createRadialGradient(192,74,6,192,74,92);g.addColorStop(0,'#f6cf6dcc');g.addColorStop(1,'#f6cf6d00');ctx.globalAlpha=.75+.15*Math.sin(t*2);ctx.fillStyle=g;ctx.fillRect(96,0,192,170);ctx.globalAlpha=1}
+   fish(152,52,4);star(140,40,2,'#fff7d6');star(246,98,2,'#fff7d6');
+   person(157,122,5,{happy:true});
+  }else{
+   // 20년 후: 낡은 리어카, 앞면에 그날의 천 원
+   skyline(true);rect(22,26,32,32,'#fbe2aa');rect(17,33,42,18,'#fbe2aa');
+   cart(134,66,{future:true});bench(290,171);person(65,164,2,{walk:!reduced,happy:true});
+   star(239,166,1+Math.floor(t*2)%2,'#fff7d6');
+   for(let i=0;i<8;i++){const x=(i*67+Math.floor(t*6))%384,y=30+(i*37+Math.floor(t*9))%175;rect(x,y,2,3,i%2?'#e8c68f':'#fff0c6')}
+   text('20년 후',192,39,13,'#695247');
+  }
+  rect(0,0,384,2,'#ffffff10');rect(0,254,384,2,'#00000020');
+  if(!reduced&&motion<.35){ctx.globalAlpha=1-motion/.35;rect(0,0,384,256,'#172337');ctx.globalAlpha=1}
+ }
+ function update(){const c=chapters[scene];$o('tag').textContent=c.tag;$o('speaker').textContent=c.speaker;$o('line').textContent=c.line;canvas.setAttribute('aria-label',c.alt);$o('count').textContent=(scene+1)+' / '+chapters.length;$o('next').textContent=scene===LAST?(inGame?'첫 장사 시작 →':'홈으로 돌아가기 →'):'다음 장면 →';$o('auto').textContent=auto?'자동 진행 켜짐':'직접 넘기기';$o('auto').setAttribute('aria-pressed',String(auto));draw();progress()}
+ function progress(){dialog.querySelectorAll('.origin-progress i').forEach((bar,i)=>{bar.style.width=i<scene?'100%':i===scene?(scene===LAST?'100%':Math.min(elapsed/6000*100,100)+'%'):'0%'})}
+ function finish(){if(!originStoryActive)return;originStoryActive=false;if(inGame&&S&&S.story&&!S.story.seenOpening){S.story.seenOpening=true;save()}cancelAnimationFrame(raf);dialog.close();last=performance.now();if(returnFocus&&returnFocus.isConnected&&!returnFocus.closest('[hidden]'))returnFocus.focus();if(inGame){$('#pause-game').focus();say('그날의 따뜻함을, 오늘의 손님에게.')}}
+ function next(){if(scene===LAST){finish();return}scene++;elapsed=0;motion=0;update()}
+ function frame(now){if(!originStoryActive)return;const dt=Math.min(100,now-previous);previous=now;if(!document.hidden){if(auto)elapsed+=dt;motion+=dt/1000;if(auto&&elapsed>=6000&&scene<LAST)next();if(now-painted>=42){painted=now;draw();progress()}}raf=requestAnimationFrame(frame)}
+ function play(){if(originStoryActive)return;returnFocus=document.activeElement;inGame=APP.screen==='game';scene=0;elapsed=0;motion=0;auto=!reduced;originStoryActive=true;previous=performance.now();painted=0;update();dialog.showModal();$o('next').focus();raf=requestAnimationFrame(frame)}
+ $o('skip').onclick=finish;$o('next').onclick=next;$o('auto').onclick=()=>{auto=!auto;update()};dialog.addEventListener('cancel',e=>{e.preventDefault();finish()});
+ // A screen change caused by login expiry or a save conflict must dismiss the film.
+ return {play,finish};
+})();
+
+
 const SLOTKEYS="1234567890-=";
 addEventListener("keydown",e=>{
-  if(APP.screen!=="game")return;
+  if(APP.screen!=="game"||originStoryActive)return;
   if(e.metaKey||e.ctrlKey||e.altKey)return;
   if(/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))return;   // 간판 입력 중엔 단축키 끈다
   const k=e.key.toLowerCase();
@@ -1638,7 +1796,7 @@ function status(text){$('#save-status').textContent=text;$('#retry-save').hidden
 function preserveRecovery(state){try{localStorage.setItem(cacheKey()+':recovery',JSON.stringify({state}))}catch{}}
 function localRead(key){try{return JSON.parse(localStorage.getItem(key)||'null')}catch{return null}}
 function cacheWrite(state,dirty){try{localStorage.setItem(cacheKey(),JSON.stringify({state,revision:APP.revision,dirty}));return true}catch{status('브라우저 저장 공간이 부족해요. 저장 파일을 내려받아 주세요.');return false}}
-function setScreen(screen){APP.screen=screen;last=performance.now();$('#lobby').hidden=screen==='game';$('.wrap').hidden=screen!=='game';$('#save-status-bar').hidden=screen!=='game';$('#login-panel').hidden=screen!=='login';$('#home-panel').hidden=screen!=='home';if(screen!=='game'){modalOpen=false;$('#modal').classList.remove('show');document.querySelectorAll('.toast,.ghost').forEach(e=>e.remove())}scrollTo(0,0)}
+function setScreen(screen){if(originStoryActive)OriginStory.finish();APP.screen=screen;last=performance.now();$('#lobby').hidden=screen==='game';$('.wrap').hidden=screen!=='game';$('#save-status-bar').hidden=screen!=='game';$('#login-panel').hidden=screen!=='login';$('#home-panel').hidden=screen!=='home';if(screen!=='game'){modalOpen=false;$('#modal').classList.remove('show');document.querySelectorAll('.toast,.ghost').forEach(e=>e.remove())}scrollTo(0,0)}
 function drawHome(){
  const r=APP.record,anon=!!(APP.user&&APP.user.is_anonymous);
  $('#account-label').textContent=APP.user?(anon?'내 계정 · 이 기기에 연결됨':(APP.user.email||'내 계정')):'게스트 · 이 브라우저에 저장';
@@ -1690,6 +1848,7 @@ function startGame(state){
  S=migrate(clone(state));if(!S)throw Error('올바른 저장 파일이 아니에요.');
  cid=Math.max(0,...S.cust.map(c=>c.id||0));qSig=null;acc=0;sayUntil=0;modalOpen=false;$('#modal').classList.remove('show');
  buildGriddle();paintAll();setScreen('game');if(S.t>=DAY)closeDay();save();flush();
+ if(!S.story.seenOpening)OriginStory.play();
 }
 async function replaceGame(state){
  if(!APP.ready)return;
@@ -1720,6 +1879,7 @@ $('#guest-login').onclick=()=>run(()=>enterHome(null));
 $('#home-continue').onclick=()=>run(async()=>{if(APP.ready&&APP.record)startGame(APP.record)});
 $('#home-new').onclick=()=>run(()=>replaceGame(fresh()));
 $('#home-refresh').onclick=()=>run(refreshHome);
+$('#origin-story-replay').onclick=()=>{if(!APP.busy)OriginStory.play()};
 $('#home-legacy').onclick=()=>run(async()=>{const old=load();if(!old)throw Error('이 브라우저에 예전 기록이 없어요.');await replaceGame(old)});
 $('#home-import').onclick=()=>$('#lobby-import').click();
 $('#lobby-import').onchange=e=>run(async()=>{const file=e.target.files[0];e.target.value='';if(!file)return;if(file.size>1024*1024)throw Error('저장 파일은 1MB 이하여야 해요.');const state=migrate(JSON.parse(await file.text()));if(!state)throw Error('올바른 저장 파일이 아니에요.');await replaceGame(state)});
