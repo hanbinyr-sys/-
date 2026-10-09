@@ -468,7 +468,7 @@ body,body.expanded-griddle{height:auto;min-height:100dvh;flex-direction:column;a
  <header class="origin-top"><div><div class="origin-label">PROLOGUE</div><h2 id="origin-title">천 원으로 시작된 꿈</h2></div><button type="button" id="origin-skip">건너뛰기 ↗</button></header>
  <div class="origin-layout"><div class="origin-art"><canvas id="origin-canvas" width="384" height="256" role="img" aria-label="눈 내리는 겨울 골목의 어린아이"></canvas><span class="origin-scene-tag" id="origin-tag"></span></div>
  <section class="origin-dialogue"><span class="origin-speaker" id="origin-speaker"></span><p class="origin-line" id="origin-line" aria-live="polite"></p><div class="origin-footer"><button type="button" id="origin-auto" aria-pressed="true">자동 진행 켜짐</button><span class="origin-count" id="origin-count"></span><button type="button" class="origin-next" id="origin-next">다음 장면 →</button></div></section></div>
- <div class="origin-progress" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span></div>
+ <div class="origin-progress" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span></div>
 </dialog>
 <section id="lobby" class="lobby" aria-label="붕어빵 타이쿤 시작 화면">
  <div class="lobby-frame">
@@ -1621,29 +1621,32 @@ const OriginStory=(()=>{
  const $o=id=>document.getElementById('origin-'+id);
  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
  const chapters=[
-  {tag:'01 / 그해 겨울',speaker:'어린 시절의 나',line:'유난히 춥던 겨울 골목.\n눈 속에서 꼬깃한 천 원 한 장을 주웠다.',alt:'눈 내리는 푸른 골목. 목도리를 두른 아이가 눈 속에서 천 원짜리 지폐를 줍는다.'},
-  {tag:'02 / 할머니의 포장마차',speaker:'붕어빵 할머니',line:'“천 원이면 하나지…\n에이, 하나 더 가져가.”',alt:'주황빛 포장마차에서 할머니가 천 원을 받고 아이에게 붕어빵 두 마리를 건넨다.'},
-  {tag:'03 / 잊을 수 없는 한 입',speaker:'어린 시절의 나',line:'한 입 베어 물자 김이 피어올랐다.\n세상이 온통 금빛으로 번졌다.',alt:'김이 나는 붕어빵을 베어 문 아이. 화면이 금빛으로 번진다.'},
-  {tag:'04 / 그날의 다짐',speaker:'어린 시절의 나',line:'“나도… 세상에서 제일 맛있는\n붕어빵을 만들 거야!”',alt:'별이 빛나는 밤하늘 아래, 아이가 빛나는 붕어빵을 올려다보며 다짐한다.'},
-  {tag:'05 / 20년 후',speaker:'그리고, 오늘',line:'낡은 리어카 한 대.\n그날의 천 원은 아직 리어카에 붙어 있다.',alt:'햇살 비치는 골목. 어른이 된 주인공의 낡은 리어카 앞면에 천 원짜리 지폐가 붙어 있다.'}
+  {dur:7000,tag:'01 / 그해 겨울',speaker:'어린 시절의 나',line:'유난히 춥던 겨울밤.\n배가 너무 고파서, 더는 걸을 힘이 없었다.',alt:'눈 내리는 어두운 골목. 아이가 눈 위에 쓰러져 오들오들 떨고 있다.'},
+  {dur:9000,tag:'02 / 바람에 실려 온 냄새',speaker:'어린 시절의 나',line:'그때, 바람을 타고 달콤한 냄새가 실려 왔다.\n냄새를 따라 일어선 발끝에, 천 원 한 장이 있었다.',alt:'따뜻한 냄새가 골목으로 흘러오고, 아이가 일어나 냄새를 따라가다 눈 속의 천 원을 줍는다.'},
+  {dur:7000,tag:'03 / 할머니의 포장마차',speaker:'붕어빵 할머니',line:'“천 원이면 하나지…\n에이, 하나 더 가져가.”',alt:'주황빛 포장마차에서 할머니가 천 원을 받고 아이에게 붕어빵 두 마리를 건넨다.'},
+  {dur:9000,tag:'04 / 잊을 수 없는 한 입',speaker:'어린 시절의 나',line:'한 입 베어 문 순간,\n얼어 있던 세상이 온통 금빛으로 번졌다.',alt:'차갑게 얼어 있던 화면이 아이가 붕어빵을 베어 문 순간 금빛으로 터지며 따뜻해진다.'},
+  {dur:6500,tag:'05 / 그날의 다짐',speaker:'어린 시절의 나',line:'“나도… 세상에서 제일 맛있는\n붕어빵을 만들 거야!”',alt:'별이 빛나는 밤하늘 아래, 아이가 빛나는 붕어빵을 올려다보며 다짐한다.'},
+  {dur:6500,tag:'06 / 20년 후',speaker:'그리고, 오늘',line:'낡은 리어카 한 대.\n그날의 천 원은 아직 리어카에 붙어 있다.',alt:'햇살 비치는 골목. 어른이 된 주인공의 낡은 리어카 앞면에 천 원짜리 지폐가 붙어 있다.'}
  ];
- const LAST=chapters.length-1;
+ const LAST=chapters.length-1,dur=()=>chapters[scene].dur||6000;
  let scene=0,elapsed=0,motion=0,auto=!reduced,raf=0,previous=0,painted=0,returnFocus=null,inGame=false;
  const rect=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))};
  function text(s,x,y,size=10,c='#fff1cd'){ctx.fillStyle=c;ctx.font=`bold ${size}px sans-serif`;ctx.textAlign='center';ctx.fillText(s,x,y)}
  function sprite(rows,pal,x,y,scale=1){rows.forEach((row,j)=>[...row].forEach((p,i)=>{if(pal[p])rect(x+i*scale,y+j*scale,scale,scale,pal[p])}))}
  const child=[
  '....HHHHHH....','...HHHHHHHH...','..HHHHHHHHHH..','..HHSSSSSSHH..','..HSSSSSSSSH..','...SSKSSKSS...','...SSSSSSSS...','....SSMMSS....','...RRRRRRRR...','..BBRRRRRBBB..','..BBBBRRBBBB..','.SBBBBRRBBBBS.','.SSBBBBBBBBSS.','...BBBBBBBB...','...BBBBBBBB...','....PP.PP.....','....PP.PP.....','...KKK.KKK....'];
- function person(x,y,scale=2,{chef=false,happy=false,walk=false,bend=false,grandma=false}={}){
-  const bob=walk?Math.floor(motion*4)%2:0;
-  ctx.save();ctx.translate(Math.round(x),Math.round(y+bob*scale));
+ function person(x,y,scale=2,{chef=false,happy=false,walk=false,bend=false,grandma=false,rot=0,shiver=false,closed=false}={}){
+  const bob=walk?Math.floor(motion*4)%2:0,jit=shiver&&!reduced?(Math.floor(motion*14)%2?1:-1):0;
+  ctx.save();ctx.translate(Math.round(x+jit),Math.round(y+bob*scale));
+  if(rot){ctx.translate(7*scale,18*scale);ctx.rotate(rot);ctx.translate(-7*scale,-18*scale)}
   if(bend){ctx.translate(4*scale,4*scale);ctx.rotate(.22)}
-  const rows=happy?child.map(r=>r.replace('SSKSSKSS','SSMSSMSS')):child;
+  const rows=happy?child.map(r=>r.replace('SSKSSKSS','SSMSSMSS')):closed?child.map(r=>r.replace('SSKSSKSS','SSSSSSSS').replace('SSSSSSSS..','SSSSSSSS..')):child;
   sprite(rows,{H:grandma?'#d9d3cb':'#302c3c',S:grandma?'#e8b48e':'#f4bf96',K:'#242737',M:happy?'#994c44':'#bd795b',R:chef?'#e8d7ab':grandma?'#b4553f':'#d26352',B:chef?'#eaddc0':grandma?'#7b6a86':'#527d99',P:'#304155'},0,0,scale);
   if(grandma){rect(5*scale,-2*scale,4*scale,3*scale,'#c9c2b9');rect(3*scale,5*scale,3*scale,scale,'#5a4636');rect(8*scale,5*scale,3*scale,scale,'#5a4636');rect(4*scale,10*scale,6*scale,5*scale,'#e7d3ab')}
   if(chef){rect(3*scale,-3*scale,8*scale,5*scale,'#ffefd3');rect(2*scale,-2*scale,10*scale,3*scale,'#ffefd3');rect(4*scale,10*scale,6*scale,5*scale,'#aa6e43');rect(5*scale,11*scale,4*scale,1*scale,'#e6b780')}
   if(happy){rect(3*scale,6*scale,2*scale,scale,'#e98b77');rect(9*scale,6*scale,2*scale,scale,'#e98b77')}
   if(walk&&bob){rect(3*scale,17*scale,3*scale,scale,'#304155');rect(7*scale,18*scale,3*scale,scale,'#242737')}
+  if(closed){rect(4*scale,5*scale,2*scale,scale,'#5b4a44');rect(8*scale,5*scale,2*scale,scale,'#5b4a44')}
   ctx.restore();
  }
  function star(x,y,s=1,c='#f4d188'){rect(x-s,y,3*s,s,c);rect(x,y-s,s,3*s,c)}
@@ -1679,32 +1682,62 @@ const OriginStory=(()=>{
   steam(x+20,y+77,motion);rect(x+81,y+72,24,13,'#ebd8b6');
  }
  function heart(x,y,s=1){sprite(['.rr.rr.','rrrrrrr','rrrrrrr','.rrrrr.','..rrr..','...r...'],{r:'#ca6957'},x,y,s)}
- function glow(a){if(a<=0)return;const g=ctx.createRadialGradient(192,128,10,192,128,230);g.addColorStop(0,'#fff3c4');g.addColorStop(.55,'#f6cf6d');g.addColorStop(1,'#d9953a');ctx.globalAlpha=Math.min(a,.42);ctx.fillStyle=g;ctx.fillRect(0,0,384,256);ctx.globalAlpha=1}
+ const ease=(a,b,t)=>Math.max(0,Math.min(1,(t-a)/(b-a)));
+ function vignette(a){const g=ctx.createRadialGradient(192,140,60,192,140,260);g.addColorStop(0,'#00000000');g.addColorStop(1,'#000000');ctx.globalAlpha=a;ctx.fillStyle=g;ctx.fillRect(0,0,384,256);ctx.globalAlpha=1}
+ function warmLight(x,y,r,a){const g=ctx.createRadialGradient(x,y,4,x,y,r);g.addColorStop(0,'#ffd892');g.addColorStop(1,'#ffd89200');ctx.globalAlpha=a;ctx.fillStyle=g;ctx.fillRect(x-r,y-r,r*2,r*2);ctx.globalAlpha=1}
+ // 오들오들: 입김과 떨림 표시
+ function cold(hx,hy,t){const k=Math.floor(t*3)%3;ctx.globalAlpha=.7-k*.2;rect(hx-6-k*4,hy-4-k*3,4+k*2,3,'#e5edf0');ctx.globalAlpha=1;
+  if(Math.floor(t*6)%2){rect(hx+8,hy-12,2,5,'#c6d5e2');rect(hx+13,hy-10,2,4,'#c6d5e2');rect(hx+50,hy-8,2,5,'#c6d5e2')}}
+ // 바람에 실려 오는 냄새: 오른쪽에서 아이 코끝까지 흐르는 금빛 물결
+ function scent(tx,ty,t,a=1){for(let w=0;w<3;w++){for(let i=0;i<34;i++){const u=i/33,x=384-(384-tx)*u,y=ty-18+w*12+Math.sin(u*9+t*3+w*2)*6*(1-u*.4)-u*6;const vis=((u*4-t*1.4+w*.3)%1+1)%1;ctx.globalAlpha=a*(.25+.55*(vis<.5?vis*2:2-vis*2))*(1-u*.25);rect(x,y,3,2,w===1?'#ffe2a0':'#f6c879')}}ctx.globalAlpha=1}
+ function rays(cx,cy,t,a){if(a<=0)return;ctx.save();ctx.translate(cx,cy);ctx.rotate(t*.22);ctx.globalAlpha=a;ctx.fillStyle='#fff1b8';for(let i=0;i<14;i++){const an=i*Math.PI*2/14;ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,320,an,an+.12);ctx.closePath();ctx.fill()}ctx.restore();ctx.globalAlpha=1}
  function draw(){
-  ctx.imageSmoothingEnabled=false;ctx.globalAlpha=1;const t=reduced?4:motion,p=reduced?.8:Math.min(motion/6,1);
+  ctx.imageSmoothingEnabled=false;ctx.globalAlpha=1;const D=dur()/1000,t=reduced?D:motion,p=Math.min(t/D,1);
   if(scene===0){
-   // 겨울 골목: 걸어와서 → 몸을 숙여 → 천 원을 줍는다
+   // 쓰러져 오들오들 떠는 아이. 눈이 조금씩 쌓인다
    skyline(false);lamp(43);bench(294,170);
-   const x=reduced?150:86+Math.min(t/2.6,1)*64,picked=p>.72;
-   person(x,165,2,{walk:!reduced&&t<2.6,bend:p>.48&&!picked});
-   if(!picked){bill(198,206);star(213,193,1+Math.floor(t*2)%2);star(234,208,1)}else{bill(176,184);star(209,178,2);star(170,176,1)}
-   snow(t);text('어느 추운 겨울날',192,38,11,'#c6d5e2');
+   person(150,168,2,{rot:-Math.PI/2,shiver:true,closed:true});
+   for(let i=0;i<Math.floor(p*7);i++)rect(128+i*5,190-(i%2),3,2,'#eef3f5');
+   cold(124,197,t);
+   if(t>2.2)text('꼬르륵…',150,170,9,'#c6d5e2');
+   snow(t,70);vignette(.55);
   }else if(scene===1){
+   // 냄새 → 고개를 들고 일어나 → 냄새를 따라가다 → 천 원
+   skyline(false);lamp(43);bench(294,170);
+   warmLight(392,150,150,.35+.1*Math.sin(t*2));
+   const up=ease(2.2,4,t),walkT=ease(4.3,6,t),picked=t>7.3;
+   const x=150+walkT*36;
+   person(x,168,2,{rot:-Math.PI/2*(1-up),shiver:t<2.2,closed:t<2,walk:walkT>0&&walkT<1&&!reduced,bend:t>6.4&&!picked,happy:t>4});
+   const head=up<1?{x:126+up*30,y:197-up*30}:{x:x+14,y:176};
+   scent(head.x,head.y,t,Math.min(1,t/1.5));
+   if(t>2&&t<3.8)text('킁킁…',head.x+6,head.y-14,9,'#ffe2a0');
+   if(t>4.3&&!picked){bill(206,207);star(221,194,1+Math.floor(t*3)%2);star(240,209,1)}
+   if(picked){bill(x+10,172);star(x+44,166,2);star(x+6,164,1)}
+   snow(t,40);vignette(.45*(1-up*.5));
+  }else if(scene===2){
    // 할머니의 포장마차: 천 원을 내밀고 → 붕어빵 두 마리
    skyline(false);lamp(43);
    ctx.globalAlpha=.14;rect(137,83,185,128,'#fbd29a');ctx.globalAlpha=1;cart(171,78,{grandma:true});
    person(118+Math.min(t,2)*5,166,2,{walk:!reduced&&t<2});
    if(p<.5)bill(150,183,.8);else{fish(138,179,1.1);fish(150,187,1.1);steam(145,181,t);heart(131,147,1)}
    snow(t,22);
-  }else if(scene===2){
-   // 한 입: 김이 오르고 금빛으로 번진다
+  }else if(scene===3){
+   // 한 입: 얼어 있던 화면이, 베어 문 순간 금빛으로 터진다
+   const B=1.8,burst=ease(B,B+1.6,t),chill=1-ease(B,B+1.8,t);
    rect(0,0,384,256,'#f4d3a4');rect(0,190,384,66,'#d9b88e');
    for(let i=0;i<10;i++){rect(i*47-20,0,20,256,i%2?'#f3c896':'#f9ddb0')}
-   rect(111,32,162,204,'#f8e0b7');person(140,46,7,{happy:p>.25});
-   rect(145,145,29,19,'#f4bf96');rect(215,145,26,19,'#f4bf96');fish(155,134,3.6,p>.3);steam(165,132,t,2);
-   glow((p-.3)*1.3);
-   if(p>.45)for(let i=0;i<9;i++){const sx=(i*83+31)%370+7,sy=(i*59+17)%220+10;star(sx,sy,(i+Math.floor(t*3))%3?1:2,'#fff7d6')}
-  }else if(scene===3){
+   rays(192,140,t,burst*.4);
+   rect(111,32,162,204,'#f8e0b7');person(140,46,7,{happy:t>B+.4,closed:t<1.2});
+   rect(145,145,29,19,'#f4bf96');rect(215,145,26,19,'#f4bf96');fish(155,134,3.6,t>1.4);steam(165,132,t,2+burst);
+   if(burst>0){const g=ctx.createRadialGradient(192,150,4,192,150,40+burst*260);g.addColorStop(0,'#fff6d2');g.addColorStop(.6,'#f8cf6a');g.addColorStop(1,'#f8cf6a00');ctx.globalAlpha=.55*burst;ctx.fillStyle=g;ctx.fillRect(0,0,384,256);ctx.globalAlpha=1}
+   // 아직 차가운 세상: 푸른 기운과 가장자리 성에
+   if(chill>0){ctx.globalAlpha=.62*chill;rect(0,0,384,256,'#1b3256');ctx.globalAlpha=.75*chill;for(let i=0;i<40;i++){const e=i%4,q=(i*53)%384,r=(i*37)%256;e===0?rect(q,0,8,6+(i%5)*3,'#e9f2f6'):e===1?rect(q,250-(i%5)*3,8,6+(i%5)*3,'#e9f2f6'):e===2?rect(0,r,5+(i%5)*3,8,'#e9f2f6'):rect(379-(i%5)*3,r,5+(i%5)*3,8,'#e9f2f6')}ctx.globalAlpha=1}
+   // 터지는 순간의 섬광
+   if(!reduced&&t>B&&t<B+.9){ctx.globalAlpha=Math.max(0,.9-(t-B)*1.1);rect(0,0,384,256,'#fffaf0');ctx.globalAlpha=1}
+   // 위로 떠오르는 금빛 가루
+   if(burst>0)for(let i=0;i<26;i++){const sx=(i*71+13)%384,sy=256-((i*47+(t-B)*38*(1+i%3))%300);ctx.globalAlpha=Math.min(1,burst)*(.5+.5*((i+Math.floor(t*4))%2));star(sx,sy,i%4===0?2:1,i%3?'#fff2c0':'#ffd36e');ctx.globalAlpha=1}
+   if(t>B+1.2){heart(84,82-Math.floor(t%2)*2,2);heart(272,104-Math.floor(t%2)*2,2)}
+  }else if(scene===4){
    // 다짐: 밤하늘의 빛나는 붕어빵을 올려다보는 아이
    rect(0,0,384,256,'#243445');rect(0,211,384,45,'#32495a');rect(0,211,384,3,'#4d6576');
    for(let i=0;i<25;i++){const x=(i*97+21)%380,y=(i*47+13)%200;star(x,y,(i%5===0?2:1),Math.floor(t*2+i)%3?'#e6c794':'#8b9b9d')}
@@ -1723,10 +1756,10 @@ const OriginStory=(()=>{
   if(!reduced&&motion<.35){ctx.globalAlpha=1-motion/.35;rect(0,0,384,256,'#172337');ctx.globalAlpha=1}
  }
  function update(){const c=chapters[scene];$o('tag').textContent=c.tag;$o('speaker').textContent=c.speaker;$o('line').textContent=c.line;canvas.setAttribute('aria-label',c.alt);$o('count').textContent=(scene+1)+' / '+chapters.length;$o('next').textContent=scene===LAST?(inGame?'첫 장사 시작 →':'홈으로 돌아가기 →'):'다음 장면 →';$o('auto').textContent=auto?'자동 진행 켜짐':'직접 넘기기';$o('auto').setAttribute('aria-pressed',String(auto));draw();progress()}
- function progress(){dialog.querySelectorAll('.origin-progress i').forEach((bar,i)=>{bar.style.width=i<scene?'100%':i===scene?(scene===LAST?'100%':Math.min(elapsed/6000*100,100)+'%'):'0%'})}
+ function progress(){dialog.querySelectorAll('.origin-progress i').forEach((bar,i)=>{bar.style.width=i<scene?'100%':i===scene?(scene===LAST?'100%':Math.min(elapsed/dur()*100,100)+'%'):'0%'})}
  function finish(){if(!originStoryActive)return;originStoryActive=false;if(inGame&&S&&S.story&&!S.story.seenOpening){S.story.seenOpening=true;save()}cancelAnimationFrame(raf);dialog.close();last=performance.now();if(returnFocus&&returnFocus.isConnected&&!returnFocus.closest('[hidden]'))returnFocus.focus();if(inGame){$('#pause-game').focus();say('그날의 따뜻함을, 오늘의 손님에게.')}}
  function next(){if(scene===LAST){finish();return}scene++;elapsed=0;motion=0;update()}
- function frame(now){if(!originStoryActive)return;const dt=Math.min(100,now-previous);previous=now;if(!document.hidden){if(auto)elapsed+=dt;motion+=dt/1000;if(auto&&elapsed>=6000&&scene<LAST)next();if(now-painted>=42){painted=now;draw();progress()}}raf=requestAnimationFrame(frame)}
+ function frame(now){if(!originStoryActive)return;const dt=Math.min(100,now-previous);previous=now;if(!document.hidden){if(auto)elapsed+=dt;motion+=dt/1000;if(auto&&elapsed>=dur()&&scene<LAST)next();if(now-painted>=42){painted=now;draw();progress()}}raf=requestAnimationFrame(frame)}
  function play(){if(originStoryActive)return;returnFocus=document.activeElement;inGame=APP.screen==='game';scene=0;elapsed=0;motion=0;auto=!reduced;originStoryActive=true;previous=performance.now();painted=0;update();dialog.showModal();$o('next').focus();raf=requestAnimationFrame(frame)}
  $o('skip').onclick=finish;$o('next').onclick=next;$o('auto').onclick=()=>{auto=!auto;update()};dialog.addEventListener('cancel',e=>{e.preventDefault();finish()});
  // A screen change caused by login expiry or a save conflict must dismiss the film.
