@@ -351,6 +351,13 @@ body,body.expanded-griddle{height:auto;min-height:100dvh;flex-direction:column;a
 .supplies .shop b{display:block;font-size:11px;font-weight:650}
 /* 떠나는 손님 잔상은 화면 위에 떠 있어야 한다. 뒤에 오는 .cust{position:relative}가 덮어써서 레이아웃을 밀던 문제 */
 .cust.ghost{position:fixed;margin:0}
+/* 마감 15초 전: 시간 줄이 빨갛게 바뀌고 남은 초·폐기 예정을 한 줄로 */
+.strip.closing{background:#a3432b;border-bottom-color:#6e2a1a}
+.strip.closing .bar{border-color:#6e2a1a;background:#6e2a1a}.strip.closing .bar i{background:#ffd27a}
+.strip.closing #pop-status{display:none}
+#closing-chip{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;line-height:1;font-weight:800;color:#fff6dc}
+@media(prefers-reduced-motion:no-preference){.strip.closing #closing-chip{animation:closingBlink 1s steps(2) infinite}}
+@keyframes closingBlink{50%{color:#ffd27a}}
 @media(min-width:900px){.supplies{grid-template-columns:1fr 1fr}.supplies .shop{grid-column:1/-1}.supply{flex-direction:column;align-items:stretch}.supply-buy{width:100%}}
 </style>
 <style id="mobile-fit">/* 휴대폰: 스크롤 없이 한 화면에 맞추고, 남는 높이는 모두 불판에 준다. */
@@ -513,7 +520,7 @@ body,body.expanded-griddle{height:auto;min-height:100dvh;flex-direction:column;a
   </div>
 
 
-  <div class="strip"><span id="hhmm">17:00</span><div class="bar" aria-label="하루 진행도"><i id="dayfill"></i></div><span class="chip" id="doughchip">반죽 <b>24</b></span><span class="chip" id="livechip" style="display:none"></span><span class="chip" id="goldchip" style="display:none">황금 <b>0</b></span><span id="pop-status"><span id="pop-level">입소문 · 처음 보는 노점</span><span class="rep" aria-label="다음 칭호까지"><i id="repfill"></i></span><small id="pop-progress">0/12 XP</small></span></div>
+  <div class="strip"><span id="hhmm">17:00</span><div class="bar" aria-label="하루 진행도"><i id="dayfill"></i></div><span id="closing-chip" role="status" aria-live="polite" hidden></span><span class="chip" id="doughchip">반죽 <b>24</b></span><span class="chip" id="livechip" style="display:none"></span><span class="chip" id="goldchip" style="display:none">황금 <b>0</b></span><span id="pop-status"><span id="pop-level">입소문 · 처음 보는 노점</span><span class="rep" aria-label="다음 칭호까지"><i id="repfill"></i></span><small id="pop-progress">0/12 XP</small></span></div>
   <section class="street" aria-label="손님 대기줄"><svg class="scenery" viewBox="0 0 240 104" preserveAspectRatio="xMidYMax meet" shape-rendering="crispEdges" aria-hidden="true"><rect width="240" height="104" fill="#c7e1d8"/><path d="M0 21h23V10h26v17h21V16h29v16h24V11h32v16h34V17h31v11h20v47H0Z" fill="#a7c5b8"/><path d="M0 4h24v3H0M129 8h22v3h-22M160 18h14v3h-14" fill="#edf2d4"/><path d="M-7 39h75v44H-7z" fill="#e6c79a"/><path d="M-7 35h78v7H-7z" fill="#887d64"/><path d="M3 44h49v11H3z" fill="#697f68"/><text x="11" y="52" font-size="7" fill="#fff4c5" font-family="monospace">동네 문방구</text><path d="M3 61h20v20H3zM30 61h23v15H30z" fill="#769d93"/><path d="M6 64h14v2H6M33 64h17v2H33" stroke="#c7d8b7"/><path d="M89 29h53v54H89z" fill="#eee0b7"/><path d="M86 27h59v5H86z" fill="#b28761"/><path d="M96 39h12v15H96M120 39h12v15h-12M96 61h12v15H96M120 61h12v22h-12" fill="#82a19a"/><path d="M94 54h17v3H94M118 54h17v3h-17" fill="#b39668"/><path d="M162 40h78v43h-78z" fill="#dcc996"/><path d="M158 37h87v6h-87" fill="#9d7051"/><path d="M176 60h15v23h-15M201 58h28v17h-28" fill="#738c7b"/><path d="M168 45h66v10h-66" fill="#d18255"/><text x="185" y="52" font-size="6" fill="#fff5cd">행복 세탁소</text><path d="M0 82h240v22H0z" fill="#c9b78c"/><path d="M0 85h240M0 100h240M18 85v15M64 85v15M112 85v15M160 85v15M209 85v15" stroke="#a89773" stroke-width="1"/><path d="M75 35h3v47h-3" fill="#6c7963"/><path d="M72 31h9v7h-9" fill="#fff0ac" stroke="#6c7963" stroke-width="2"/><path d="M150 70h9v13h-9" fill="#b47d50"/><path d="M148 61h13v11h-13M151 56h7v7h-7" fill="#6e9871"/></svg><div class="street-label">우리 동네 · 저녁 장사</div><div id="seat-status">손님 0 / 2명</div><div class="queue" id="queue"></div></section>
   <div class="awning"><span id="stall-sign">오천원 붕어빵</span></div>
   <main class="stage"><div class="cook-label"><span>◈ 지글지글 불판</span><span>반죽 → 뒤집기 → 담기</span></div><div class="griddle" id="griddle"></div><button class="collect" id="collect" hidden></button></main>
@@ -1293,12 +1300,15 @@ function discardAtClose(){
  // Materials were already paid for. Do not deduct cash, popularity, or combo.
 }
 function paintClosingWarning(){
- const el=$('#closing-warning');if(!el)return;
- const active=S.t>=DAY-15&&S.t<DAY;el.hidden=!active;
+ // 마감 직전 안내는 높이가 고정된 상단 시간 줄에서 보여 준다. 패널에 상자를 끼워 넣으면 불판 크기가 출렁인다
+ const old=$('#closing-warning');if(old)old.hidden=true;
+ const chip=$('#closing-chip'),strip=$('.strip');if(!chip||!strip)return;
+ const active=S.t>=DAY-15&&S.t<DAY;
+ strip.classList.toggle('closing',active);chip.hidden=!active;
  if(!active)return;
- const waste=closingInventory();
- const text=`<strong>마감까지 ${Math.max(1,Math.ceil(DAY-S.t))}초</strong><p>남은 완성품과 불판 위 재료는 마감 시 폐기돼요.</p><p>보관함 ${waste.tray}개 · 불판 ${waste.griddle}개<br>현재 기준 손실 원가 ${won(waste.cost)}</p>`;
- if(el.innerHTML!==text)el.innerHTML=text;
+ const w=closingInventory(),sec=Math.max(1,Math.ceil(DAY-S.t));
+ const text=`마감 ${sec}초 · `+(w.qty?`폐기 예정 ${w.qty}개 ${won(w.cost)}`:'남은 빵 없음');
+ if(chip.textContent!==text){chip.textContent=text;chip.title=`마감 시 보관함 ${w.tray}개 · 불판 ${w.griddle}개는 폐기돼요 (원가 ${won(w.cost)})`}
 }
 function closeDay(){
   discardAtClose();
