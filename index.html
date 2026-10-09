@@ -340,20 +340,36 @@ body,body.expanded-griddle{height:auto;min-height:100dvh;flex-direction:column;a
 .lobby-link.danger:disabled{opacity:.5}
 #anon-note{margin-top:10px}
 </style>
-<style id="mobile-fit">/* 휴대폰: 스크롤 없이 한 화면에 맞춘다. 불판이 남는 높이를 채운다. */
+<style id="supply-merge">/* 재료 카드 = 남은 수량 + 구매 버튼. 상점 버튼은 같은 줄 끝. */
+.supplies{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:stretch}
+.supply{display:flex;align-items:center;gap:6px}
+.supply-info{flex:1;min-width:0}
+.supply-buy{flex:none;background:#fff0ca;border:2px solid #886541;padding:5px 8px;box-shadow:inset 2px 2px #fffce7,2px 2px #b99562;font-size:12px;font-weight:700;line-height:1.2;color:#4b321e;text-align:center;cursor:pointer}
+.supply-buy b{display:block;font-size:13px;font-weight:800;color:#9d5024}
+.supply-buy:disabled{opacity:.45;cursor:default}
+.supplies .shop{background:#60834e;color:#fff6cf;border:2px solid #3b5432;box-shadow:inset 2px 2px #9eb77c,2px 2px #b99562;padding:6px 10px;font-size:14px;font-weight:750;line-height:1.25;cursor:pointer}
+.supplies .shop b{display:block;font-size:11px;font-weight:650}
+@media(min-width:900px){.supplies{grid-template-columns:1fr 1fr}.supplies .shop{grid-column:1/-1}.supply{flex-direction:column;align-items:stretch}.supply-buy{width:100%}}
+</style>
+<style id="mobile-fit">/* 휴대폰: 스크롤 없이 한 화면에 맞추고, 남는 높이는 모두 불판에 준다. */
 @media(max-width:520px){
  body:has(.wrap:not([hidden])){height:100dvh;min-height:0;overflow:hidden;padding:0}
  body:has(.wrap:not([hidden])) .wrap{flex:1 1 0;height:auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
  #save-status-bar{flex:none;width:100%;max-width:none;margin:0;padding:3px 10px;border-width:0 0 1px;font-size:11px;align-items:center}
  #retry-save{padding:1px 6px}
  .hd{min-height:0;padding:6px 9px}
- .strip{padding:4px 10px;gap:4px 8px}
- .strip #pop-status{padding-top:2px}
- .street{height:118px!important}
- .queue{top:14px}
- .cust{transform:scale(.72);transform-origin:50% 100%;margin:0 -11px}
- .awning{height:22px}.awning span{padding:1px 12px;font-size:11px}
- .stage{flex:1 1 0;min-height:130px!important;padding:5px 9px 7px}
+ /* 시간·하루 막대·입소문을 한 줄로 */
+ .strip{flex-wrap:nowrap;padding:5px 10px;gap:6px}
+ .strip .bar{flex:1 1 40px;min-width:30px}
+ .strip #pop-status{flex:0 1 auto;flex-basis:auto;flex-wrap:nowrap;min-width:0;margin-left:0;padding-top:0;border-top:0;gap:5px}
+ #pop-level{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px!important}
+ #pop-status .rep{flex:none;width:32px;max-width:none}
+ #pop-progress{font-size:11px!important}
+ .street{height:112px!important}
+ .queue{top:12px}
+ .cust{transform:scale(.7);transform-origin:50% 100%;margin:0 -12px}
+ .awning{height:8px;border-top-width:0;border-bottom-width:3px}.awning span{display:none}
+ .stage{flex:1 1 0;min-height:130px!important;padding:6px 9px 7px}
  .cook-label{display:none}
  .griddle,.griddle:has(.slot:nth-child(5)),.griddle:has(.slot:nth-child(7)),.griddle:has(.slot:nth-child(10)){flex:1 1 0;aspect-ratio:auto;height:auto;min-height:0}
  .slot,body.expanded-griddle .slot,.griddle:has(.slot:nth-child(7)) .slot{padding:12px 4px 9px}
@@ -366,22 +382,27 @@ body,body.expanded-griddle{height:auto;min-height:100dvh;flex-direction:column;a
  .panel{padding-top:6px}
  #closing-warning{padding:6px 8px;margin-bottom:6px;line-height:1.4}
  .supplies{gap:6px;margin-bottom:6px}
- .supply{display:grid;grid-template-columns:auto 1fr;align-items:baseline;column-gap:6px;padding:4px 8px}
- .supply-value{margin:0;justify-self:end}.supply-value b{font-size:20px!important;line-height:1.2}
- .supply small{grid-column:1/-1;min-height:0;font-size:11px}
+ .supply{padding:4px 5px 4px 8px;gap:4px}
+ .supply-label{font-size:12px!important}
+ .supply-value{margin:0}.supply-value b{font-size:21px!important;line-height:1.15}.supply-value span{font-size:11px}
+ .supply small{display:none}
+ .supply-buy{padding:4px 6px;font-size:11px}.supply-buy b{font-size:12px}
+ .supplies .shop{padding:4px 8px;font-size:13px}.supplies .shop b{font-size:10px}
  #combo-hud{display:flex;align-items:center;gap:8px;padding:4px 6px;margin-bottom:6px}
  .combo-line{flex:none;flex-direction:column;align-items:flex-start;gap:0;margin:0}
  #combo-count{font-size:15px;line-height:1.2}#combo-bonus{font-size:11px}
  .fever-line{flex:1;min-width:0}#start-fever{min-height:30px;padding:2px 6px}
  .inventory-title{display:none}
- .tray{gap:6px;margin-bottom:6px}
- .fl{padding:4px 3px}.fl .nm{font-size:13px}
+ /* 맛 칸: 이름과 완성 수량을 한 줄로. 선택한 맛의 소는 위 재료 카드에 보이므로, 부족할 때만 표시 */
+ .tray{gap:6px;margin-bottom:4px}
+ .fl{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:center;gap:0 6px;padding:5px 3px}
+ .fl .nm{font-size:13px}
  .ready-caption{display:none}
- .fl .cnt{font-size:22px;line-height:1.15}
- .fl .sub{font-size:12px;line-height:1.3;padding:2px;margin-top:3px}.fl .sub b{font-size:15px}
- .stock-warning{display:inline;min-height:0;line-height:inherit}
- .acts button{padding:6px 3px;font-size:13px;line-height:1.25}.acts button b{font-size:14px}
- .tip{font-size:12px;min-height:0;padding:3px 0}
+ .fl .cnt{font-size:20px;line-height:1.2}
+ .fl .sub{flex-basis:100%;font-size:11px;line-height:1.3;padding:1px 2px;margin-top:2px}.fl .sub b{font-size:13px}
+ .fl:not(.locked) .sub:not(.low){display:none}
+ .stock-warning{display:inline;min-height:0;line-height:inherit;margin-left:4px}
+ .tip{font-size:12px;min-height:0;padding:2px 0 3px}
  .bottom-tools{padding-top:3px;padding-bottom:max(3px,env(safe-area-inset-bottom))}.bottom-tools button{min-height:32px}
  .lobby{margin:0 auto;padding:6px}
  .lobby-hero{padding:12px 15px 22px}
@@ -402,9 +423,7 @@ body,body.expanded-griddle{height:auto;min-height:100dvh;flex-direction:column;a
 @media(max-width:520px) and (max-height:700px){
  .street{height:96px!important}
  .cust{transform:scale(.6);margin:0 -16px}
- .supply small{display:none}
  .slot,body.expanded-griddle .slot,.griddle:has(.slot:nth-child(7)) .slot,.griddle:has(.slot:nth-child(5)) .slot{padding:4px 4px 7px}
- .fl .nm{font-size:12px}.fl .cnt{font-size:19px}
  .tip{display:none}
 }
 @media(max-width:520px) and (max-height:600px){
@@ -412,8 +431,6 @@ body,body.expanded-griddle{height:auto;min-height:100dvh;flex-direction:column;a
  .queue{top:6px}
  .cust{transform:scale(.52);margin:0 -19px}
  .hd{padding-top:4px;padding-bottom:4px}
- .supply{padding:2px 8px}
- .acts button{padding:4px 3px}
 }
 </style>
 </head>
@@ -462,7 +479,7 @@ body,body.expanded-griddle{height:auto;min-height:100dvh;flex-direction:column;a
   <section class="street" aria-label="손님 대기줄"><svg class="scenery" viewBox="0 0 240 104" preserveAspectRatio="xMidYMax meet" shape-rendering="crispEdges" aria-hidden="true"><rect width="240" height="104" fill="#c7e1d8"/><path d="M0 21h23V10h26v17h21V16h29v16h24V11h32v16h34V17h31v11h20v47H0Z" fill="#a7c5b8"/><path d="M0 4h24v3H0M129 8h22v3h-22M160 18h14v3h-14" fill="#edf2d4"/><path d="M-7 39h75v44H-7z" fill="#e6c79a"/><path d="M-7 35h78v7H-7z" fill="#887d64"/><path d="M3 44h49v11H3z" fill="#697f68"/><text x="11" y="52" font-size="7" fill="#fff4c5" font-family="monospace">동네 문방구</text><path d="M3 61h20v20H3zM30 61h23v15H30z" fill="#769d93"/><path d="M6 64h14v2H6M33 64h17v2H33" stroke="#c7d8b7"/><path d="M89 29h53v54H89z" fill="#eee0b7"/><path d="M86 27h59v5H86z" fill="#b28761"/><path d="M96 39h12v15H96M120 39h12v15h-12M96 61h12v15H96M120 61h12v22h-12" fill="#82a19a"/><path d="M94 54h17v3H94M118 54h17v3h-17" fill="#b39668"/><path d="M162 40h78v43h-78z" fill="#dcc996"/><path d="M158 37h87v6h-87" fill="#9d7051"/><path d="M176 60h15v23h-15M201 58h28v17h-28" fill="#738c7b"/><path d="M168 45h66v10h-66" fill="#d18255"/><text x="185" y="52" font-size="6" fill="#fff5cd">행복 세탁소</text><path d="M0 82h240v22H0z" fill="#c9b78c"/><path d="M0 85h240M0 100h240M18 85v15M64 85v15M112 85v15M160 85v15M209 85v15" stroke="#a89773" stroke-width="1"/><path d="M75 35h3v47h-3" fill="#6c7963"/><path d="M72 31h9v7h-9" fill="#fff0ac" stroke="#6c7963" stroke-width="2"/><path d="M150 70h9v13h-9" fill="#b47d50"/><path d="M148 61h13v11h-13M151 56h7v7h-7" fill="#6e9871"/></svg><div class="street-label">우리 동네 · 저녁 장사</div><div id="seat-status">손님 0 / 2명</div><div class="queue" id="queue"></div></section>
   <div class="awning"><span id="stall-sign">오천원 붕어빵</span></div>
   <main class="stage"><div class="cook-label"><span>◈ 지글지글 불판</span><span>반죽 → 뒤집기 → 담기</span></div><div class="griddle" id="griddle"></div><button class="collect" id="collect" hidden></button></main>
-  <div class="panel"><aside id="closing-warning" role="status" aria-live="polite" hidden></aside><section class="supplies" aria-label="남은 재료"><div class="supply" id="dough-supply"><span class="supply-label">반죽</span><div class="supply-value"><b id="dough-quantity">24</b><span>개분</span></div><small id="dough-alert">넉넉해요</small></div><div class="supply" id="fill-supply"><span class="supply-label" id="fill-label">팥 소</span><div class="supply-value"><b id="fill-quantity">24</b><span>개분</span></div><small id="fill-alert">넉넉해요</small></div></section><div id="combo-hud"><div class="combo-line"><b id="combo-count">0 COMBO</b><span id="combo-bonus">판매액 +0%</span></div><div class="fever-line"><div class="fever-meter" role="img" aria-label="피버 충전 및 남은 시간"><i id="fever-fill"></i></div><button id="start-fever" disabled>피버 0/100</button></div></div><div class="inventory-title"><span>▦ 붕어빵 보관함</span><span>맛 선택 · 완성 수량</span></div><div class="tray" id="tray"></div><div class="acts"><button id="buy-dough">반죽 +20<b>₩2,000</b></button><button id="buy-fill">팥 소 +20<b>₩4,000</b></button><button id="open-shop" class="shop">상점 가기<b>설비 · 메뉴</b></button></div><div class="tip" id="tip" role="status">빈 칸을 눌러 반죽을 부어.</div></div>
+  <div class="panel"><aside id="closing-warning" role="status" aria-live="polite" hidden></aside><section class="supplies" aria-label="남은 재료"><div class="supply" id="dough-supply"><div class="supply-info"><span class="supply-label">반죽</span><div class="supply-value"><b id="dough-quantity">24</b><span>개분</span></div><small id="dough-alert">넉넉해요</small></div><button id="buy-dough" class="supply-buy">+20<b>₩2,000</b></button></div><div class="supply" id="fill-supply"><div class="supply-info"><span class="supply-label" id="fill-label">팥 소</span><div class="supply-value"><b id="fill-quantity">24</b><span>개분</span></div><small id="fill-alert">넉넉해요</small></div><button id="buy-fill" class="supply-buy">+20<b>₩4,000</b></button></div><button id="open-shop" class="shop">상점<b>설비·메뉴</b></button></section><div id="combo-hud"><div class="combo-line"><b id="combo-count">0 COMBO</b><span id="combo-bonus">판매액 +0%</span></div><div class="fever-line"><div class="fever-meter" role="img" aria-label="피버 충전 및 남은 시간"><i id="fever-fill"></i></div><button id="start-fever" disabled>피버 0/100</button></div></div><div class="inventory-title"><span>▦ 붕어빵 보관함</span><span>맛 선택 · 완성 수량</span></div><div class="tray" id="tray"></div><div class="tip" id="tip" role="status">빈 칸을 눌러 반죽을 부어.</div></div>
   <footer class="bottom-tools"><button id="go-home">⌂ 홈으로</button><button id="open-help">? 게임 방법</button><button id="restart-game">1일차로</button><button onclick="exportSave()">파일 백업</button><button onclick="document.getElementById('import-file').click()">파일 가져오기</button></footer>
 </div>
 
@@ -1081,7 +1098,7 @@ function paintTray(){
     $('#'+id+'-alert').textContent=qty===0?'재료 없음 · 구매 필요':qty<5?'얼마 안 남았어요':'남은 재료';
   }
   $('#fill-label').textContent=FL[S.sel].nm+' 소';
-  const f=FL[S.sel],bf=`${f.nm} 소 20개분<b>${won(f.bundle)}</b>`;
+  const f=FL[S.sel],bf=`+20<b>${won(f.bundle)}</b>`;
   if($("#buy-fill").dataset.html!==bf){$("#buy-fill").dataset.html=bf;$("#buy-fill").innerHTML=bf}
   $("#buy-fill").disabled=!S.unlocked[S.sel]||S.cash<f.bundle;
   $("#buy-dough").disabled=S.cash<2000;
