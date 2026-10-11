@@ -355,6 +355,24 @@ body,body.expanded-griddle{height:auto;min-height:100dvh;flex-direction:column;a
 .cust .one.short{gap:1px;white-space:nowrap}
 .cust .one.short i{font-style:normal;font-size:10px;font-weight:800;line-height:14px;min-width:13px;text-align:center}
 .cust .one.short b{font-size:14px;line-height:16px}
+/* 피버: 시작 배너 + 진행 중 화면 가장자리·불판 열기·불티. 전부 겹쳐 그리기라 레이아웃은 그대로 */
+#fever-banner{position:fixed;inset:0;z-index:30;pointer-events:none;display:none;flex-direction:column;align-items:center;justify-content:center}
+#fever-banner.show{display:flex}
+#fever-banner .flash{position:absolute;inset:0;background:#ff8a3d;opacity:0}
+#fever-banner b{position:relative;font:44px/1 Retro,monospace;letter-spacing:4px;color:#fff3c4;background:#d9502b;padding:10px 22px 8px;border:4px solid #7a2a14;box-shadow:0 0 0 3px #ffd36e,6px 8px 0 #3e1a0c88}
+#fever-banner small{position:relative;margin-top:12px;font:800 14px -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:#fff;background:#7a2a14d9;padding:4px 10px}
+#fever-banner.show b,#fever-banner.show small{animation:feverIn 1.4s cubic-bezier(.2,.8,.3,1) forwards}
+#fever-banner.show .flash{animation:feverFlash .6s ease-out}
+@keyframes feverIn{0%{opacity:0;transform:scale(2.4)}16%{opacity:1;transform:scale(.92)}26%{transform:scale(1)}78%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-24px)}}
+@keyframes feverFlash{0%{opacity:.55}100%{opacity:0}}
+body.fever .wrap::after{content:"";position:absolute;inset:0;z-index:6;pointer-events:none;box-shadow:inset 0 0 0 3px #ff8a3d,inset 0 0 34px 6px #ff6a1f80;animation:feverEdge .7s ease-in-out infinite alternate}
+@keyframes feverEdge{to{box-shadow:inset 0 0 0 3px #ffd36e,inset 0 0 54px 14px #ff8a3db0}}
+body.fever .griddle{border-color:#c4421d;box-shadow:inset 3px 3px #e7955a,inset -3px -3px #7d2c12,0 0 0 2px #ff8a3d,0 0 22px 4px #ff6a1fb0}
+.fever-fx{display:none;position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden}
+body.fever .fever-fx{display:block}
+.fever-fx i{position:absolute;bottom:-6px;width:4px;height:4px;background:#ffcf5a;box-shadow:0 0 6px 1px #ff7a2f;opacity:0;animation:ember 1.7s linear infinite}
+@keyframes ember{0%{opacity:0;transform:translate(0,0)}15%{opacity:1}100%{opacity:0;transform:translate(10px,-240px)}}
+@media(prefers-reduced-motion:reduce){body.fever .wrap::after{animation:none}.fever-fx{display:none!important}#fever-banner.show b,#fever-banner.show small,#fever-banner.show .flash{animation:none}}
 /* 떠나는 손님 잔상은 화면 위에 떠 있어야 한다. 뒤에 오는 .cust{position:relative}가 덮어써서 레이아웃을 밀던 문제 */
 .cust.ghost{position:fixed;margin:0}
 /* 마감 15초 전: 시간 줄이 빨갛게 바뀌고 남은 초·폐기 예정을 한 줄로 */
@@ -509,6 +527,7 @@ body,body.expanded-griddle{height:auto;min-height:100dvh;flex-direction:column;a
 <input type="file" id="lobby-import" accept=".json,application/json" hidden>
 <div id="save-status-bar" hidden><span id="save-status" role="status" aria-live="polite"></span><button id="retry-save">다시 저장</button></div>
 
+<div id="fever-banner" aria-hidden="true"><span class="flash"></span><b>FEVER!</b><small>12초간 판매액 ×1.5 · 인내심 2배</small></div>
 <div class="wrap" hidden>
   <div class="hd">
     <button class="avatar" id="avatar" title="캐릭터">🧑‍🍳</button>
@@ -529,7 +548,7 @@ body,body.expanded-griddle{height:auto;min-height:100dvh;flex-direction:column;a
   <div class="strip"><span id="hhmm">17:00</span><div class="bar" aria-label="하루 진행도"><i id="dayfill"></i></div><span id="closing-chip" role="status" aria-live="polite" hidden></span><span class="chip" id="doughchip">반죽 <b>24</b></span><span class="chip" id="livechip" style="display:none"></span><span class="chip" id="goldchip" style="display:none">황금 <b>0</b></span><span id="pop-status"><span id="pop-level">입소문 · 처음 보는 노점</span><span class="rep" aria-label="다음 칭호까지"><i id="repfill"></i></span><small id="pop-progress">0/12 XP</small></span></div>
   <section class="street" aria-label="손님 대기줄"><svg class="scenery" viewBox="0 0 240 104" preserveAspectRatio="xMidYMax meet" shape-rendering="crispEdges" aria-hidden="true"><rect width="240" height="104" fill="#c7e1d8"/><path d="M0 21h23V10h26v17h21V16h29v16h24V11h32v16h34V17h31v11h20v47H0Z" fill="#a7c5b8"/><path d="M0 4h24v3H0M129 8h22v3h-22M160 18h14v3h-14" fill="#edf2d4"/><path d="M-7 39h75v44H-7z" fill="#e6c79a"/><path d="M-7 35h78v7H-7z" fill="#887d64"/><path d="M3 44h49v11H3z" fill="#697f68"/><text x="11" y="52" font-size="7" fill="#fff4c5" font-family="monospace">동네 문방구</text><path d="M3 61h20v20H3zM30 61h23v15H30z" fill="#769d93"/><path d="M6 64h14v2H6M33 64h17v2H33" stroke="#c7d8b7"/><path d="M89 29h53v54H89z" fill="#eee0b7"/><path d="M86 27h59v5H86z" fill="#b28761"/><path d="M96 39h12v15H96M120 39h12v15h-12M96 61h12v15H96M120 61h12v22h-12" fill="#82a19a"/><path d="M94 54h17v3H94M118 54h17v3h-17" fill="#b39668"/><path d="M162 40h78v43h-78z" fill="#dcc996"/><path d="M158 37h87v6h-87" fill="#9d7051"/><path d="M176 60h15v23h-15M201 58h28v17h-28" fill="#738c7b"/><path d="M168 45h66v10h-66" fill="#d18255"/><text x="185" y="52" font-size="6" fill="#fff5cd">행복 세탁소</text><path d="M0 82h240v22H0z" fill="#c9b78c"/><path d="M0 85h240M0 100h240M18 85v15M64 85v15M112 85v15M160 85v15M209 85v15" stroke="#a89773" stroke-width="1"/><path d="M75 35h3v47h-3" fill="#6c7963"/><path d="M72 31h9v7h-9" fill="#fff0ac" stroke="#6c7963" stroke-width="2"/><path d="M150 70h9v13h-9" fill="#b47d50"/><path d="M148 61h13v11h-13M151 56h7v7h-7" fill="#6e9871"/></svg><div class="street-label">우리 동네 · 저녁 장사</div><div id="seat-status">손님 0 / 2명</div><div class="queue" id="queue"></div></section>
   <div class="awning"><span id="stall-sign">오천원 붕어빵</span></div>
-  <main class="stage"><div class="cook-label"><span>◈ 지글지글 불판</span><span>반죽 → 뒤집기 → 담기</span></div><div class="griddle" id="griddle"></div><button class="collect" id="collect" hidden></button></main>
+  <main class="stage"><div class="cook-label"><span>◈ 지글지글 불판</span><span>반죽 → 뒤집기 → 담기</span></div><div class="griddle" id="griddle"></div><div class="fever-fx" aria-hidden="true"><i style="left:8%;animation-delay:0s"></i><i style="left:19%;animation-delay:0.7s"></i><i style="left:31%;animation-delay:0.3s"></i><i style="left:43%;animation-delay:1.1s"></i><i style="left:52%;animation-delay:0.5s"></i><i style="left:63%;animation-delay:0.9s"></i><i style="left:74%;animation-delay:0.2s"></i><i style="left:86%;animation-delay:1.3s"></i><i style="left:93%;animation-delay:0.6s"></i><i style="left:37%;animation-delay:1.5s"></i></div><button class="collect" id="collect" hidden></button></main>
   <div class="panel"><aside id="closing-warning" role="status" aria-live="polite" hidden></aside><section class="supplies" aria-label="남은 재료"><div class="supply" id="dough-supply"><div class="supply-info"><span class="supply-label">반죽</span><div class="supply-value"><b id="dough-quantity">24</b><span>개분</span></div><small id="dough-alert">넉넉해요</small></div><button id="buy-dough" class="supply-buy">+20<b>₩2,000</b></button></div><div class="supply" id="fill-supply"><div class="supply-info"><span class="supply-label" id="fill-label">팥 소</span><div class="supply-value"><b id="fill-quantity">24</b><span>개분</span></div><small id="fill-alert">넉넉해요</small></div><button id="buy-fill" class="supply-buy">+20<b>₩4,000</b></button></div><button id="open-shop" class="shop">상점<b>설비·메뉴</b></button></section><div id="combo-hud"><div class="combo-line"><b id="combo-count">0 COMBO</b><span id="combo-bonus">판매액 +0%</span></div><div class="fever-line"><div class="fever-meter" role="img" aria-label="피버 충전 및 남은 시간"><i id="fever-fill"></i></div><button id="start-fever" disabled>피버 0/100</button></div></div><div class="inventory-title"><span>▦ 붕어빵 보관함</span><span>맛 선택 · 완성 수량</span></div><div class="tray" id="tray"></div><div class="tip" id="tip" role="status">빈 칸을 눌러 반죽을 부어.</div></div>
   <footer class="bottom-tools"><button id="go-home">⌂ 홈으로</button><button id="open-help">? 게임 방법</button><button id="restart-game">1일차로</button><button onclick="exportSave()">파일 백업</button><button onclick="document.getElementById('import-file').click()">파일 가져오기</button></footer>
 </div>
@@ -1072,7 +1091,14 @@ function paintCombo(){
   b.disabled=active||!ready||S.t>=DAY||modalOpen;
   b.classList.toggle("ready",ready&&!active);
   $("#combo-hud").classList.toggle("active",active);
+  // 피버 연출: 시작 배너 → 진행 중 화면 효과 → 끝 안내
+  if(active!==feverShown){
+    feverShown=active;document.body.classList.toggle("fever",active);
+    if(active){const fb=$("#fever-banner");fb.classList.remove("show");void fb.offsetWidth;fb.classList.add("show");clearTimeout(feverBannerT);feverBannerT=setTimeout(()=>fb.classList.remove("show"),1400)}
+    else if(APP.screen==='game'&&S.t>0&&S.t<DAY)say("피버 끝! 수고했어요");
+  }
 }
+let feverShown=false,feverBannerT=0;
 
 function serve(i,el,automatic=false){
   const c=S.cust[i];if(!c)return;
