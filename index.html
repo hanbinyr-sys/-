@@ -349,6 +349,12 @@ body,body.expanded-griddle{height:auto;min-height:100dvh;flex-direction:column;a
 .supply-buy:disabled{opacity:.45;cursor:default}
 .supplies .shop{background:#60834e;color:#fff6cf;border:2px solid #3b5432;box-shadow:inset 2px 2px #9eb77c,2px 2px #b99562;padding:6px 10px;font-size:14px;font-weight:750;line-height:1.25;cursor:pointer}
 .supplies .shop b{display:block;font-size:11px;font-weight:650}
+/* 여러 맛 주문: 항상 한 줄 (팥2 슈1 피3). 넘치면 말풍선이 손님 가운데를 기준으로 넓어진다 */
+.cust .bub.multi{width:max-content;min-width:100%;left:50%;transform:translateX(-50%);padding-left:3px;padding-right:3px}
+.cust .bub.multi .ord{flex-wrap:nowrap;justify-content:center;gap:0 3px}
+.cust .one.short{gap:1px;white-space:nowrap}
+.cust .one.short i{font-style:normal;font-size:10px;font-weight:800;line-height:14px;min-width:13px;text-align:center}
+.cust .one.short b{font-size:14px;line-height:16px}
 /* 떠나는 손님 잔상은 화면 위에 떠 있어야 한다. 뒤에 오는 .cust{position:relative}가 덮어써서 레이아웃을 밀던 문제 */
 .cust.ghost{position:fixed;margin:0}
 /* 마감 15초 전: 시간 줄이 빨갛게 바뀌고 남은 초·폐기 예정을 한 줄로 */
@@ -982,9 +988,12 @@ function paintQueue(){
     S.cust.forEach(c=>{
       const b=document.createElement("button");
       b.className="cust";b.type="button";
-      const ord=KEYS.filter(k=>c.wants[k]).map(k=>
-        `<span class="one" style="color:${FL[k].color}">${MINI}${FL[k].nm} <b>${c.wants[k]}</b></span>`).join("");
-      b.innerHTML=`<div class="bub"><div class="ord">${ord}</div></div>
+      // 맛이 여럿이면 말풍선이 세로로 길어져 거리 위쪽에서 잘린다 → 맛 첫 글자+개수를 한 줄로
+      const ks=KEYS.filter(k=>c.wants[k]),multi=ks.length>1,dense=multi&&ks.some(k=>c.wants[k]>9);
+      const ord=ks.map(k=>multi
+        ?`<span class="one short"><i style="background:${FL[k].color};color:${k==="cream"?"#4b3a12":"#fff8e6"}">${FL[k].nm[0]}</i><b>${c.wants[k]}</b></span>`
+        :`<span class="one" style="color:${FL[k].color}">${MINI}${FL[k].nm} <b>${c.wants[k]}</b></span>`).join("");
+      b.innerHTML=`<div class="bub${multi?" multi":""}${dense?" dense":""}"><div class="ord">${ord}</div></div>
         <div class="ring"><span class="hole">${pixelGuest(c)}</span></div><span class="mood-label">여유</span>`;
       b.setAttribute("aria-label",KEYS.filter(k=>c.wants[k]).map(k=>FL[k].nm+" "+c.wants[k]+"개").join(", "));
       // 끌면 줄 스크롤, 그 자리에서 떼면 판매 (preventDefault 금지 — 터치 스크롤이 죽는다)
